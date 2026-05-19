@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Munjalsinh Zala – Mechatronics Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f0f0f;
+    --bg2: #161616;
+    --bg3: #1e1e1e;
+    --line: rgba(255,255,255,0.08);
+    --line2: rgba(255,255,255,0.15);
+    --text: #f0ede6;
+    --muted: #888880;
+    --accent: #e8d5a0;
+    --accent2: #c4a96a;
+    --accent-dim: rgba(232,213,160,0.12);
+    --mono: 'DM Mono', monospace;
+    --display: 'Syne', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 64px;
+    border-bottom: 0.5px solid var(--line);
+    background: rgba(15,15,15,0.92);
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 80px 48px 80px;
+    position: relative;
+    border-bottom: 0.5px solid var(--line);
+    overflow: hidden;
+  }
+  .hero-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.4) 40%, transparent 100%);
+  }
+  .hero-accent-circle {
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    border: 0.5px solid var(--line2);
+    pointer-events: none;
+  }
+  .hero-accent-circle2 {
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    border: 0.5px solid var(--line);
+    pointer-events: none;
+  }
+  .hero-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero-label::before {
+    content: '';
+    display: block;
+    width: 32px; height: 1px;
+    background: var(--accent2);
+  }
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(48px, 7.5vw, 92px);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    position: relative;
+    margin-bottom: 32px;
+  }
+  h1 span { color: var(--accent); }
+  .hero-sub {
+    font-size: 13px;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.9;
+    position: relative;
+    margin-bottom: 36px;
+  }
+  .hero-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    position: relative;
+    margin-bottom: 44px;
+  }
+  .chip {
+    font-size: 10px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border: 0.5px solid var(--line2);
+    color: var(--muted);
+    background: var(--bg3);
+  }
+  .chip.accent { border-color: var(--accent2); color: var(--accent); background: var(--accent-dim); }
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .btn-primary {
+    padding: 14px 28px;
+    background: var(--accent);
+    color: #0f0f0f;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s;
+  }
+  .btn-primary:hover { background: var(--accent2); }
+  .btn-ghost {
+    padding: 14px 28px;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 0.5px solid var(--line2);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+  .hero-stats {
+    position: absolute;
+    bottom: 80px; right: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-end;
+  }
+  .hero-stat-val {
+    font-family: var(--display);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+  .hero-stat-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 100px 48px;
+    border-bottom: 0.5px solid var(--line);
+  }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 64px;
+  }
+  .section-num {
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+  h2 {
+    font-family: var(--display);
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  .section-line {
+    flex: 1;
+    height: 0.5px;
+    background: var(--line);
+    margin-left: 12px;
+  }
+
+  /* PROJECTS */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 0.5px solid var(--line);
+  }
+  .project-card {
+    background: var(--bg);
+    padding: 36px;
+    cursor: pointer;
+    transition: background 0.2s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 300px;
+  }
+  .project-card:hover { background: var(--bg3); }
+  .project-card:hover .project-arrow { opacity: 1; transform: translate(0,0); }
+
+  .project-img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    border: 0.5px solid var(--line);
+    margin-bottom: 4px;
+    display: block;
+    background: var(--bg3);
+  }
+  .project-gallery {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .gallery-open {
+    position: relative;
+    display: block;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+  }
+  .project-gallery-main {
+    margin-bottom: 0;
+  }
+  .gallery-open:hover .project-gallery-main,
+  .gallery-open:focus-visible .project-gallery-main {
+    border-color: var(--accent2);
+  }
+  .gallery-badge {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    padding: 6px 10px;
+    background: rgba(15,15,15,0.82);
+    border: 0.5px solid var(--line2);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .project-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .project-gallery-thumb {
+    width: 100%;
+    aspect-ratio: 16/10;
+    object-fit: cover;
+    border: 0.5px solid var(--line);
+    background: var(--bg3);
+    display: block;
+  }
+  .component-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .component-item {
+    border: 0.5px solid var(--line);
+    background: var(--bg3);
+    overflow: hidden;
+  }
+  .component-item img,
+  .component-item video {
+    width: 100%;
+    aspect-ratio: 16/10;
+    object-fit: cover;
+    display: block;
+    background: #f4f4f4;
+  }
+  .component-label {
+    display: block;
+    padding: 8px 10px;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-top: 0.5px solid var(--line);
+  }
+  .gallery-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 28px;
+    background: rgba(15,15,15,0.92);
+    backdrop-filter: blur(10px);
+  }
+  .gallery-modal.is-open { display: flex; }
+  .gallery-panel {
+    width: min(1180px, 100%);
+    max-height: calc(100vh - 56px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 220px;
+    gap: 16px;
+  }
+  .gallery-stage {
+    min-height: 0;
+    border: 0.5px solid var(--line2);
+    background: var(--bg2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .gallery-stage img,
+  .gallery-stage video {
+    width: 100%;
+    max-height: calc(100vh - 140px);
+    object-fit: contain;
+    display: block;
+  }
+  .gallery-note {
+    padding: 12px;
+    border: 0.5px solid var(--line);
+    background: rgba(255,255,255,0.02);
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.7;
+  }
+  .gallery-title {
+    padding: 12px;
+    border: 0.5px solid var(--line2);
+    background: var(--bg3);
+    color: var(--accent);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .gallery-side {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .gallery-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .gallery-btn {
+    padding: 10px;
+    border: 0.5px solid var(--line2);
+    background: var(--bg3);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .gallery-btn:hover,
+  .gallery-btn:focus-visible {
+    border-color: var(--accent2);
+    color: var(--accent);
+  }
+  .gallery-close { grid-column: 1 / -1; }
+  .gallery-thumbs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    overflow: auto;
+    padding-right: 2px;
+  }
+  .gallery-thumb-btn {
+    padding: 0;
+    border: 0.5px solid var(--line);
+    background: var(--bg3);
+    cursor: pointer;
+  }
+  .gallery-thumb-btn.is-active,
+  .gallery-thumb-btn:hover,
+  .gallery-thumb-btn:focus-visible {
+    border-color: var(--accent2);
+  }
+  .gallery-thumb-btn img {
+    width: 100%;
+    aspect-ratio: 16/10;
+    object-fit: cover;
+    display: block;
+  }
+  .gallery-thumb-label {
+    display: block;
+    padding: 6px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 0.06em;
+    line-height: 1.3;
+    text-transform: uppercase;
+    text-align: left;
+  }
+  .project-img-placeholder {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: var(--bg3);
+    border: 0.5px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .project-img-placeholder svg {
+    position: absolute;
+    opacity: 0.05;
+    width: 70%;
+  }
+  .project-img-placeholder-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    position: relative;
+  }
+  .upload-hint {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(136,136,128,0.5);
+    position: relative;
+  }
+  .project-note {
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.7;
+    padding: 12px;
+    border: 0.5px solid var(--line);
+    background: rgba(255,255,255,0.02);
+  }
+  .project-tag {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .project-tag::before {
+    content: '';
+    display: block;
+    width: 18px; height: 1px;
+    background: var(--accent2);
+  }
+  .project-title {
+    font-family: var(--display);
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .project-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.85;
+    flex: 1;
+  }
+  .project-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+  }
+  .project-bullets li {
+    font-size: 11px;
+    color: var(--muted);
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.7;
+  }
+  .project-bullets li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--accent2);
+    font-size: 10px;
+  }
+  .project-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 16px;
+    border-top: 0.5px solid var(--line);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .project-arrow {
+    opacity: 0;
+    transform: translate(-4px, 4px);
+    transition: opacity 0.2s, transform 0.2s;
+    color: var(--accent);
+  }
+  .project-card.add-card {
+    border: 1px dashed rgba(255,255,255,0.1);
+    background: transparent;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--muted);
+    cursor: default;
+  }
+  .add-icon { font-size: 28px; margin-bottom: 10px; opacity: 0.3; }
+  .add-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); opacity: 0.5; }
+
+  /* ABOUT */
+  .about-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .about-text p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.95;
+    margin-bottom: 18px;
+  }
+  .about-text p strong { color: var(--text); font-weight: 500; }
+  .about-text p:last-child { margin-bottom: 0; }
+
+  .skills-panel { display: flex; flex-direction: column; gap: 24px; }
+  .skills-group-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .skills-group-label::after {
+    content: '';
+    flex: 1;
+    height: 0.5px;
+    background: var(--line);
+  }
+  .skills-list {
+    display: flex;
+    flex-direction: column;
+    border: 0.5px solid var(--line);
+  }
+  .skill-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 18px;
+    border-bottom: 0.5px solid var(--line);
+    font-size: 12px;
+  }
+  .skill-row:last-child { border-bottom: none; }
+  .skill-name { color: var(--text); }
+  .skill-badge {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border: 0.5px solid var(--accent2);
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+  .skill-level {
+    display: flex;
+    gap: 3px;
+  }
+  .skill-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--line2);
+  }
+  .skill-dot.filled { background: var(--accent); }
+
+  /* EXPERIENCE */
+  .exp-list { display: flex; flex-direction: column; gap: 0; }
+  .exp-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 48px;
+    padding: 40px 0;
+    border-bottom: 0.5px solid var(--line);
+  }
+  .exp-item:first-child { padding-top: 0; }
+  .exp-item:last-child { border-bottom: none; }
+  .exp-meta { display: flex; flex-direction: column; gap: 6px; }
+  .exp-date {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .exp-company { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .exp-role {
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .exp-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .exp-bullets li {
+    font-size: 12px;
+    color: var(--muted);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.75;
+  }
+  .exp-bullets li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--accent2);
+    font-size: 10px;
+    top: 1px;
+  }
+
+  /* CONTACT */
+  .contact-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .contact-info { display: flex; flex-direction: column; gap: 0; border: 0.5px solid var(--line); }
+  .contact-item {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 0.5px solid var(--line);
+    transition: background 0.2s;
+  }
+  .contact-item:last-child { border-bottom: none; }
+  .contact-item:hover { background: var(--bg3); }
+  .contact-icon {
+    width: 32px; height: 32px;
+    border: 0.5px solid var(--line2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    font-size: 13px;
+    flex-shrink: 0;
+    font-family: var(--display);
+  }
+  .contact-item-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 2px; }
+  .contact-item-val { font-size: 12px; color: var(--text); }
+  .contact-item a { color: var(--text); text-decoration: none; }
+  .contact-item a:hover { color: var(--accent); }
+  .contact-cta {
+    padding: 40px;
+    border: 0.5px solid var(--line);
+    background: var(--bg2);
+  }
+  .contact-cta h3 {
+    font-family: var(--display);
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+  .contact-cta p { font-size: 12px; color: var(--muted); line-height: 1.9; margin-bottom: 24px; }
+
+  /* FOOTER */
+  footer {
+    padding: 28px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links { gap: 20px; }
+    .hero, section { padding-left: 24px; padding-right: 24px; }
+    h1 { font-size: 42px; }
+    .hero-stats { display: none; }
+    .project-gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    .gallery-modal { padding: 16px; }
+    .gallery-panel { grid-template-columns: 1fr; }
+    .gallery-stage img { max-height: 56vh; }
+    .gallery-thumbs { grid-template-columns: repeat(4, 1fr); }
+    .about-layout, .contact-layout { grid-template-columns: 1fr; gap: 48px; }
+    .exp-item { grid-template-columns: 1fr; gap: 12px; }
+    footer { flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#home" class="nav-logo">MZ</a>
+  <div class="nav-links">
+    <a href="#projects">Projects</a>
+    <a href="#about">About</a>
+    <a href="#experience">Experience</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-accent-circle"></div>
+  <div class="hero-accent-circle2"></div>
+
+  <div class="hero-label">Mechatronics Engineer · CAD & FEM Designer</div>
+  <h1>Munjalsinh<br><span>Zala</span></h1>
+  <p class="hero-sub">5th-semester Mechatronics student at SRH University Berlin. Mechanical Design Lead on CanSat 2026 (AIAA/AAS, NASA-sponsored). Designing precision parts and assemblies for aerospace-grade applications.</p>
+  <div class="hero-chips">
+    <div class="chip accent">SolidWorks Certified</div>
+    <div class="chip accent">AutoCAD Certified</div>
+    <div class="chip accent">ANSYS FEM</div>
+    <div class="chip">Fusion 360</div>
+    <div class="chip">FDM 3D Printing</div>
+    <div class="chip">GD&T</div>
+    <div class="chip">CFD</div>
+    <div class="chip">Python · MATLAB</div>
+  </div>
+  <div class="hero-cta">
+    <a href="#projects" class="btn-primary">View Projects</a>
+    <a href="#contact" class="btn-ghost">Get in Touch</a>
+  </div>
+
+  <div class="hero-stats">
+    <div>
+      <div class="hero-stat-val">1.9</div>
+      <div class="hero-stat-label">GPA · German Scale</div>
+    </div>
+    <div>
+      <div class="hero-stat-val">−400g</div>
+      <div class="hero-stat-label">Mass Saved · CanSat</div>
+    </div>
+    <div>
+      <div class="hero-stat-val">30G</div>
+      <div class="hero-stat-label">Ejection Load · Validated</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2>Projects</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="projects-grid">
+
+    <!-- Project 1: CanSat -->
+    <div class="project-card">
+      <div class="project-gallery">
+        <button class="gallery-open" type="button" data-gallery-open aria-label="Open CanSat image gallery">
+          <img class="project-img project-gallery-main" src="assets/images/cansat-01.jpg" alt="Detailed CanSat internal electronics and carbon-fiber structure CAD view">
+          <span class="gallery-badge">View 9 images</span>
+        </button>
+      </div>
+      <div class="project-img-placeholder" style="display: none;">
+        <svg viewBox="0 0 200 112" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="80" y="10" width="40" height="90" rx="4" stroke="white" stroke-width="1"/>
+          <ellipse cx="100" cy="10" rx="20" ry="6" stroke="white" stroke-width="0.8"/>
+          <ellipse cx="100" cy="100" rx="20" ry="6" stroke="white" stroke-width="0.8"/>
+          <line x1="100" y1="10" x2="100" y2="100" stroke="white" stroke-width="0.3" stroke-dasharray="3 3"/>
+          <line x1="60" y1="56" x2="140" y2="56" stroke="white" stroke-width="0.3" stroke-dasharray="3 3"/>
+          <circle cx="100" cy="56" r="8" stroke="white" stroke-width="0.8"/>
+          <path d="M60 80 Q50 56 60 32" stroke="white" stroke-width="0.5" fill="none"/>
+          <path d="M140 80 Q150 56 140 32" stroke="white" stroke-width="0.5" fill="none"/>
+        </svg>
+        <span class="project-img-placeholder-label">Image Coming Soon</span>
+        <span class="upload-hint">Screenshot from SolidWorks</span>
+      </div>
+      <div class="project-tag">SolidWorks · ANSYS</div>
+      <div class="project-title">CanSat 2026 – Paraglider Payload System</div>
+      <ul class="project-bullets">
+        <li>Reduced system mass from 1400 g to 1000 g via structural optimisation and material selection</li>
+        <li>Designed release mechanism with 1.5× safety factor and &lt;1 s deployment time</li>
+        <li>Full FEM campaign: static structural, thermal, CFD pre-prototype; validated against 30G ejection shock</li>
+        <li>Paraglider descent control system for GPS-guided landing</li>
+      </ul>
+      <div class="project-meta">
+        <span>AIAA/AAS · NASA-Sponsored · 2026</span>
+        <span class="project-arrow">→</span>
+      </div>
+    </div>
+
+    <!-- Project 2: ERC Rover -->
+    <div class="project-card erc-card">
+      <img class="project-img" src="assets/images/erc-rover.jpg" alt="European Rover Challenge rover mechanical design preview" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="project-img-placeholder">
+        <svg viewBox="0 0 200 112" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="100" y1="56" x2="40" y2="40" stroke="white" stroke-width="1"/>
+          <line x1="100" y1="56" x2="160" y2="40" stroke="white" stroke-width="1"/>
+          <line x1="100" y1="56" x2="40" y2="72" stroke="white" stroke-width="1"/>
+          <line x1="100" y1="56" x2="160" y2="72" stroke="white" stroke-width="1"/>
+          <circle cx="40" cy="40" r="10" stroke="white" stroke-width="0.8"/>
+          <circle cx="160" cy="40" r="10" stroke="white" stroke-width="0.8"/>
+          <circle cx="40" cy="72" r="10" stroke="white" stroke-width="0.8"/>
+          <circle cx="160" cy="72" r="10" stroke="white" stroke-width="0.8"/>
+          <rect x="88" y="44" width="24" height="24" rx="2" stroke="white" stroke-width="0.8"/>
+          <line x1="80" y1="56" x2="120" y2="56" stroke="white" stroke-width="0.3" stroke-dasharray="3 3"/>
+          <line x1="100" y1="36" x2="100" y2="76" stroke="white" stroke-width="0.3" stroke-dasharray="3 3"/>
+        </svg>
+        <span class="project-img-placeholder-label">Image Coming Soon</span>
+        <span class="upload-hint">Designs available after PDR clearance</span>
+      </div>
+      <div class="project-tag">Rover Mechanics · Rocker-Bogie Stability</div>
+      <div class="project-title">European Rover Challenge – Rover Mechanical Stability</div>
+      <ul class="project-bullets">
+        <li>Rover mechanical engineer supporting improvements to the current six-wheel rocker-bogie system</li>
+        <li>Focused on stability, load distribution, and reliable four-point ground contact behavior</li>
+        <li>Contributing to early-stage mechanical decisions during the PDR process</li>
+        <li>Finals: September 2026, Kraków, Poland</li>
+      </ul>
+      <div class="project-note">Currently in the Preliminary Design Review process. Detailed rover designs cannot be shared publicly yet and will be added later in the competition timeline.</div>
+      <div class="project-meta">
+        <span>ERC 2026 · 20-Person Team</span>
+        <span class="project-arrow">→</span>
+      </div>
+    </div>
+
+    <!-- Project 3: Internship work -->
+    <div class="project-card">
+      <div class="project-gallery">
+        <button class="gallery-open" type="button" data-jmcad-gallery-open aria-label="Open JMCAD image gallery">
+          <img class="project-img project-gallery-main" src="assets/images/jmcad-v6-engine-drawing.png" alt="V6 engine technical drawing">
+          <span class="gallery-badge">View 6 items</span>
+        </button>
+      </div>
+      <div class="project-img-placeholder" style="display: none;">
+        <svg viewBox="0 0 200 112" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="20" width="70" height="70" stroke="white" stroke-width="0.8"/>
+          <rect x="30" y="30" width="50" height="50" stroke="white" stroke-width="0.4" stroke-dasharray="4 2"/>
+          <rect x="110" y="30" width="70" height="50" stroke="white" stroke-width="0.8"/>
+          <line x1="20" y1="20" x2="110" y2="30" stroke="white" stroke-width="0.5"/>
+          <line x1="90" y1="20" x2="180" y2="30" stroke="white" stroke-width="0.5"/>
+          <line x1="90" y1="90" x2="180" y2="80" stroke="white" stroke-width="0.5"/>
+          <line x1="20" y1="90" x2="110" y2="80" stroke="white" stroke-width="0.5"/>
+          <circle cx="145" cy="55" r="12" stroke="white" stroke-width="0.8"/>
+          <line x1="130" y1="55" x2="160" y2="55" stroke="white" stroke-width="0.3"/>
+          <line x1="145" y1="40" x2="145" y2="70" stroke="white" stroke-width="0.3"/>
+        </svg>
+        <span class="project-img-placeholder-label">Image Coming Soon</span>
+        <span class="upload-hint">Screenshot from SolidWorks / AutoCAD</span>
+      </div>
+      <div class="project-tag">SolidWorks · AutoCAD</div>
+      <div class="project-title">Client Component Design Support – JMCAD Internship</div>
+      <ul class="project-bullets">
+          <li>Supported engineers by designing and modifying mechanical components for client projects</li>
+          <li>Prepared CAD parts, assemblies, and drawing updates in SolidWorks and AutoCAD</li>
+        <li>Worked across machine concepts, mechanisms, sheet-metal parts, and technical drawings</li>
+      </ul>
+      <div class="project-meta">
+        <span>JMCAD Engineering Solutions · 2023</span>
+        <span class="project-arrow">→</span>
+      </div>
+    </div>
+
+    <!-- Project 4: ANSYS exhaust analysis -->
+    <div class="project-card">
+      <div class="project-gallery">
+        <button class="gallery-open" type="button" data-ansys-gallery-open aria-label="Open ANSYS exhaust analysis gallery">
+          <img class="project-img project-gallery-main" src="assets/images/ansys-exhaust-temperature-contour.png" alt="ANSYS temperature contour of exhaust system">
+          <span class="gallery-badge">View 4 results</span>
+        </button>
+      </div>
+      <div class="project-tag">ANSYS Â· Thermal Â· CFD</div>
+      <div class="project-title">Thermal and CFD Analysis of an Exhaust System</div>
+      <ul class="project-bullets">
+        <li>Modelling and simulation class project analysing thermal and flow behaviour in an exhaust system</li>
+        <li>Reviewed temperature and pressure contour results across the full exhaust geometry</li>
+        <li>Evaluated local manifold temperature and deformation response from coupled-field simulation outputs</li>
+      </ul>
+      <div class="project-meta">
+        <span>Modelling & Simulation Class Â· ANSYS</span>
+        <span class="project-arrow">â†’</span>
+      </div>
+    </div>
+
+    <!-- Placeholder card -->
+    <div class="project-card add-card">
+      <div class="add-icon">+</div>
+      <div class="add-label">More Projects Coming Soon</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2>About</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="about-layout">
+    <div class="about-text">
+      <p>I'm <strong>Munjalsinh Zala</strong>, a Mechatronics Engineering student at <strong>SRH University Berlin</strong> (GPA 1.9), with a hands-on focus on structural design, FEM simulation, and aerospace-grade testing.</p>
+      <p>Currently serving as <strong>Mechanical Design Lead</strong> on the CanSat Competition 2026 — a NASA/NRL-sponsored rocket payload mission. I design for real constraints: 30G ejection shock, tight mass budgets, and GPS-guided paraglider descent.</p>
+      <p>I also contribute as a <strong>Rover Mechanical Engineer</strong> for the <strong>European Rover Challenge 2026</strong>, helping improve stability in a six-wheel rocker-bogie system with four points of contact while the team moves through Preliminary Design Review.</p>
+      <p>My certifications in <strong>SolidWorks and AutoCAD</strong> back up practical experience from an engineering internship and metalworking training at Handwerkskammer Potsdam. I'm actively seeking an internship to apply structural design and validation skills at the cutting edge of sUAS / eVTOL development.</p>
+    </div>
+    <div class="skills-panel">
+      <div>
+        <div class="skills-group-label">CAD / Simulation</div>
+        <div class="skills-list">
+          <div class="skill-row">
+            <span class="skill-name">SolidWorks</span>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="skill-badge">Certified</span>
+              <div class="skill-level">
+                <div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div>
+              </div>
+            </div>
+          </div>
+          <div class="skill-row">
+            <span class="skill-name">AutoCAD</span>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="skill-badge">Certified</span>
+              <div class="skill-level">
+                <div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot"></div>
+              </div>
+            </div>
+          </div>
+          <div class="skill-row">
+            <span class="skill-name">ANSYS (FEM/CFD)</span>
+            <div class="skill-level">
+              <div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot"></div>
+            </div>
+          </div>
+          <div class="skill-row">
+            <span class="skill-name">Fusion 360</span>
+            <div class="skill-level">
+              <div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot"></div><div class="skill-dot"></div>
+            </div>
+          </div>
+          <div class="skill-row">
+            <span class="skill-name">Autodesk Inventor</span>
+            <div class="skill-level">
+              <div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot"></div><div class="skill-dot"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="skills-group-label">Engineering & Fabrication</div>
+        <div class="skills-list">
+          <div class="skill-row">
+            <span class="skill-name">GD&T</span>
+            <div class="skill-level">
+              <div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot"></div>
+            </div>
+          </div>
+          <div class="skill-row">
+            <span class="skill-name">FDM 3D Printing</span>
+            <div class="skill-level">
+              <div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot"></div>
+            </div>
+          </div>
+          <div class="skill-row">
+            <span class="skill-name">Python · MATLAB</span>
+            <div class="skill-level">
+              <div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot"></div><div class="skill-dot"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2>Experience & Education</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="exp-list">
+    <div class="exp-item">
+      <div class="exp-meta">
+        <div class="exp-date">2026 – Present</div>
+        <div class="exp-company">AIAA/AAS · NASA-Sponsored<br>CanSat Competition 2026</div>
+      </div>
+      <div>
+        <div class="exp-role">Mechanical Design Lead – CanSat Competition</div>
+        <ul class="exp-bullets">
+          <li>Led mechanical design of a paraglider-guided rocket payload — survive 30G ejection, steer to GPS target, release payload at 2 m altitude</li>
+          <li>Reduced total system mass from 1400 g to 1000 g through structural optimisation and material selection</li>
+          <li>Designed release mechanism with 1.5× safety factor and &lt;1 s deployment time</li>
+          <li>Ran ANSYS FEM (static structural, thermal, CFD) and full physical test campaign: vacuum, thermal, drop, vibration, load testing</li>
+        </ul>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-meta">
+        <div class="exp-date">2026 – Present</div>
+        <div class="exp-company">European Rover Challenge<br>Finals: Kraków, Sept 2026</div>
+      </div>
+      <div>
+        <div class="exp-role">Rover Mechanical Engineer</div>
+        <ul class="exp-bullets">
+          <li>Improving mechanical stability of the current six-wheel rocker-bogie rover system</li>
+          <li>Evaluating load distribution and four-point ground contact behavior during early design review</li>
+          <li>Supporting PDR-stage mechanical decisions; detailed designs remain confidential until later in the competition</li>
+        </ul>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-meta">
+        <div class="exp-date">Feb – May 2023</div>
+        <div class="exp-company">JMCAD Engineering Solutions<br>India</div>
+      </div>
+      <div>
+        <div class="exp-role">Engineering Intern – Client Component Design</div>
+        <ul class="exp-bullets">
+          <li>Supported engineers by designing and modifying mechanical components for client projects</li>
+          <li>Prepared CAD parts, assemblies, and drawing updates in SolidWorks and AutoCAD</li>
+          <li>Worked across machine concepts, mechanisms, sheet-metal parts, and technical drawings</li>
+        </ul>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-meta">
+        <div class="exp-date">2024 – Present</div>
+        <div class="exp-company">SRH University Berlin<br>GPA: 1.9</div>
+      </div>
+      <div>
+        <div class="exp-role">B.Eng. Applied Mechatronic Systems Engineering</div>
+        <ul class="exp-bullets">
+          <li>Focus: mechanics, control systems, FEM, mechatronics</li>
+          <li>SolidWorks & AutoCAD Certified (JMCAD, 2023)</li>
+          <li>Metalworking Training – Handwerkskammer Potsdam (2024)</li>
+          <li>Languages: English C1 · German A2 · Hindi & Gujarati Native</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2>Contact</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="contact-layout">
+    <div class="contact-info">
+      <div class="contact-item">
+        <div class="contact-icon">@</div>
+        <div>
+          <div class="contact-item-label">Email</div>
+          <div class="contact-item-val"><a href="mailto:munjalzala@gmail.com">munjalzala@gmail.com</a></div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">in</div>
+        <div>
+          <div class="contact-item-label">LinkedIn</div>
+          <div class="contact-item-val"><a href="https://linkedin.com/in/munjalsinh-zala" target="_blank">linkedin.com/in/munjalsinh-zala</a></div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">☎</div>
+        <div>
+          <div class="contact-item-label">Phone</div>
+          <div class="contact-item-val">+49 176 6844 1048</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">◎</div>
+        <div>
+          <div class="contact-item-label">Location</div>
+          <div class="contact-item-val">Berlin, Germany</div>
+        </div>
+      </div>
+    </div>
+    <div class="contact-cta">
+      <h3>Open to internship roles</h3>
+      <p>I'm actively seeking engineering internships — particularly in sUAS, eVTOL, or aerospace-adjacent mechanical design. If you're building something that needs precision CAD and structural thinking, let's talk.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2025 Munjalsinh Zala</span>
+  <span>Mechatronics Engineer · Berlin</span>
+</footer>
+
+<div class="gallery-modal" id="cansat-gallery" aria-hidden="true">
+  <div class="gallery-panel" role="dialog" aria-modal="true" aria-label="CanSat image gallery">
+    <div class="gallery-stage">
+      <img id="gallery-stage-img" src="assets/images/cansat-01.jpg" alt="Detailed CanSat internal electronics and carbon-fiber structure CAD view">
+    </div>
+    <div class="gallery-side">
+      <div class="gallery-actions">
+        <button class="gallery-btn" type="button" data-gallery-prev>Prev</button>
+        <button class="gallery-btn" type="button" data-gallery-next>Next</button>
+        <button class="gallery-btn gallery-close" type="button" data-gallery-close>Close</button>
+      </div>
+      <div class="gallery-thumbs" aria-label="Choose CanSat image">
+        <button class="gallery-thumb-btn is-active" type="button" data-gallery-index="0"><img src="assets/images/cansat-01.jpg" alt="Detailed CanSat internal electronics and carbon-fiber structure CAD view"></button>
+        <button class="gallery-thumb-btn" type="button" data-gallery-index="1"><img src="assets/images/cansat-02.jpg" alt="CanSat payload inside transparent shell CAD view"></button>
+        <button class="gallery-thumb-btn" type="button" data-gallery-index="2"><img src="assets/images/cansat-03.jpg" alt="CanSat internal structure angled CAD view"></button>
+        <button class="gallery-thumb-btn" type="button" data-gallery-index="3"><img src="assets/images/cansat-04.jpg" alt="CanSat separated upper frame and lower shell CAD view"></button>
+        <button class="gallery-thumb-btn" type="button" data-gallery-index="4"><img src="assets/images/cansat-05.jpg" alt="CanSat lower shell and honeycomb structure CAD view"></button>
+        <button class="gallery-thumb-btn" type="button" data-gallery-index="5"><img src="assets/images/cansat-06.jpg" alt="CanSat front section CAD view with electronics and shell"></button>
+        <button class="gallery-thumb-btn" type="button" data-gallery-index="6"><img src="assets/images/cansat-07.jpg" alt="CanSat technical drawing sheet with dimensions and assembly view"></button>
+        <button class="gallery-thumb-btn" type="button" data-gallery-index="7"><img src="assets/images/cansat-08.jpg" alt="CanSat carbon-fiber frame and electronics close-up CAD view"></button>
+        <button class="gallery-thumb-btn" type="button" data-gallery-index="8"><img src="assets/images/cansat-09.jpg" alt="CanSat full parachute payload deployment CAD view"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="gallery-modal" id="jmcad-gallery" aria-hidden="true">
+  <div class="gallery-panel" role="dialog" aria-modal="true" aria-label="JMCAD internship design gallery">
+    <div class="gallery-stage" id="jmcad-gallery-stage">
+      <img src="assets/images/jmcad-v6-engine-drawing.png" alt="V6 engine technical drawing">
+    </div>
+    <div class="gallery-side">
+      <div class="gallery-title" id="jmcad-gallery-title">V6 Engine Drawing</div>
+      <div class="gallery-note">These are designs I made while learning SolidWorks at JMCAD and supporting client component design work during my internship.</div>
+      <div class="gallery-actions">
+        <button class="gallery-btn" type="button" data-jmcad-gallery-prev>Prev</button>
+        <button class="gallery-btn" type="button" data-jmcad-gallery-next>Next</button>
+        <button class="gallery-btn gallery-close" type="button" data-jmcad-gallery-close>Close</button>
+      </div>
+      <div class="gallery-thumbs" aria-label="Choose JMCAD design">
+        <button class="gallery-thumb-btn is-active" type="button" data-jmcad-gallery-index="0"><img src="assets/images/jmcad-v6-engine-drawing.png" alt="V6 engine technical drawing"><span class="gallery-thumb-label">V6 Engine Drawing</span></button>
+        <button class="gallery-thumb-btn" type="button" data-jmcad-gallery-index="1"><img src="assets/images/jmcad-concept-drone-docking-station.png" alt="Concept drone docking station CAD model"><span class="gallery-thumb-label">Concept Drone Docking Station</span></button>
+        <button class="gallery-thumb-btn" type="button" data-jmcad-gallery-index="2"><img src="assets/images/jmcad-foil-sealing-machine.png" alt="Foil sealing machine CAD model"><span class="gallery-thumb-label">Foil Sealing Machine</span></button>
+        <button class="gallery-thumb-btn" type="button" data-jmcad-gallery-index="3"><img src="assets/images/jmcad-shock-absorber.png" alt="Shock absorber CAD model"><span class="gallery-thumb-label">Shock Absorber</span></button>
+        <button class="gallery-thumb-btn" type="button" data-jmcad-gallery-index="4"><img src="assets/images/jmcad-stapler-sheet-metal.png" alt="Stapler sheet metal CAD part"><span class="gallery-thumb-label">Stapler Sheet Metal</span></button>
+        <button class="gallery-thumb-btn" type="button" data-jmcad-gallery-index="5"><img src="assets/images/jmcad-v6-engine-drawing.png" alt="Complete engine CAD animation preview"><span class="gallery-thumb-label">Complete Engine</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="gallery-modal" id="ansys-gallery" aria-hidden="true">
+  <div class="gallery-panel" role="dialog" aria-modal="true" aria-label="ANSYS exhaust analysis gallery">
+    <div class="gallery-stage" id="ansys-gallery-stage">
+      <img src="assets/images/ansys-exhaust-temperature-contour.png" alt="ANSYS temperature contour of exhaust system">
+    </div>
+    <div class="gallery-side">
+      <div class="gallery-title" id="ansys-gallery-title">Temperature Contour</div>
+      <div class="gallery-note">Thermal and CFD analysis results from a modelling and simulation class project on an exhaust system.</div>
+      <div class="gallery-actions">
+        <button class="gallery-btn" type="button" data-ansys-gallery-prev>Prev</button>
+        <button class="gallery-btn" type="button" data-ansys-gallery-next>Next</button>
+        <button class="gallery-btn gallery-close" type="button" data-ansys-gallery-close>Close</button>
+      </div>
+      <div class="gallery-thumbs" aria-label="Choose ANSYS result">
+        <button class="gallery-thumb-btn is-active" type="button" data-ansys-gallery-index="0"><img src="assets/images/ansys-exhaust-temperature-contour.png" alt="ANSYS temperature contour of exhaust system"><span class="gallery-thumb-label">Temperature Contour</span></button>
+        <button class="gallery-thumb-btn" type="button" data-ansys-gallery-index="1"><img src="assets/images/ansys-exhaust-pressure-contour.png" alt="ANSYS pressure contour of exhaust system"><span class="gallery-thumb-label">Pressure Contour</span></button>
+        <button class="gallery-thumb-btn" type="button" data-ansys-gallery-index="2"><img src="assets/images/ansys-exhaust-manifold-temperature.png" alt="ANSYS manifold temperature result"><span class="gallery-thumb-label">Manifold Temperature</span></button>
+        <button class="gallery-thumb-btn" type="button" data-ansys-gallery-index="3"><img src="assets/images/ansys-exhaust-manifold-deformation.png" alt="ANSYS manifold total deformation result"><span class="gallery-thumb-label">Total Deformation</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const galleryImages = [
+    ['assets/images/cansat-01.jpg', 'Detailed CanSat internal electronics and carbon-fiber structure CAD view'],
+    ['assets/images/cansat-02.jpg', 'CanSat payload inside transparent shell CAD view'],
+    ['assets/images/cansat-03.jpg', 'CanSat internal structure angled CAD view'],
+    ['assets/images/cansat-04.jpg', 'CanSat separated upper frame and lower shell CAD view'],
+    ['assets/images/cansat-05.jpg', 'CanSat lower shell and honeycomb structure CAD view'],
+    ['assets/images/cansat-06.jpg', 'CanSat front section CAD view with electronics and shell'],
+    ['assets/images/cansat-07.jpg', 'CanSat technical drawing sheet with dimensions and assembly view'],
+    ['assets/images/cansat-08.jpg', 'CanSat carbon-fiber frame and electronics close-up CAD view'],
+    ['assets/images/cansat-09.jpg', 'CanSat full parachute payload deployment CAD view']
+  ];
+
+  const galleryModal = document.getElementById('cansat-gallery');
+  const galleryStageImg = document.getElementById('gallery-stage-img');
+  const galleryThumbs = [...document.querySelectorAll('[data-gallery-index]')];
+  let activeGalleryIndex = 0;
+
+  function setGalleryImage(index) {
+    activeGalleryIndex = (index + galleryImages.length) % galleryImages.length;
+    const [src, alt] = galleryImages[activeGalleryIndex];
+    galleryStageImg.src = src;
+    galleryStageImg.alt = alt;
+    galleryThumbs.forEach((thumb, thumbIndex) => {
+      thumb.classList.toggle('is-active', thumbIndex === activeGalleryIndex);
+    });
+  }
+
+  function openGallery() {
+    galleryModal.classList.add('is-open');
+    galleryModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    setGalleryImage(0);
+    document.querySelector('[data-gallery-close]').focus();
+  }
+
+  function closeGallery() {
+    galleryModal.classList.remove('is-open');
+    galleryModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    document.querySelector('[data-gallery-open]').focus();
+  }
+
+  document.querySelector('[data-gallery-open]').addEventListener('click', openGallery);
+  document.querySelector('[data-gallery-close]').addEventListener('click', closeGallery);
+  document.querySelector('[data-gallery-prev]').addEventListener('click', () => setGalleryImage(activeGalleryIndex - 1));
+  document.querySelector('[data-gallery-next]').addEventListener('click', () => setGalleryImage(activeGalleryIndex + 1));
+  galleryThumbs.forEach((thumb) => {
+    thumb.addEventListener('click', () => setGalleryImage(Number(thumb.dataset.galleryIndex)));
+  });
+  galleryModal.addEventListener('click', (event) => {
+    if (event.target === galleryModal) closeGallery();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (!galleryModal.classList.contains('is-open')) return;
+    if (event.key === 'Escape') closeGallery();
+    if (event.key === 'ArrowLeft') setGalleryImage(activeGalleryIndex - 1);
+    if (event.key === 'ArrowRight') setGalleryImage(activeGalleryIndex + 1);
+  });
+
+  const jmcadGalleryItems = [
+    { type: 'image', src: 'assets/images/jmcad-v6-engine-drawing.png', alt: 'V6 engine technical drawing', name: 'V6 Engine Drawing' },
+    { type: 'image', src: 'assets/images/jmcad-concept-drone-docking-station.png', alt: 'Concept drone docking station CAD model', name: 'Concept Drone Docking Station' },
+    { type: 'image', src: 'assets/images/jmcad-foil-sealing-machine.png', alt: 'Foil sealing machine CAD model', name: 'Foil Sealing Machine' },
+    { type: 'image', src: 'assets/images/jmcad-shock-absorber.png', alt: 'Shock absorber CAD model', name: 'Shock Absorber' },
+    { type: 'image', src: 'assets/images/jmcad-stapler-sheet-metal.png', alt: 'Stapler sheet metal CAD part', name: 'Stapler Sheet Metal' },
+    { type: 'video', src: 'assets/images/jmcad-complete-engine.mp4', alt: 'Complete engine CAD animation', name: 'Complete Engine' }
+  ];
+
+  const jmcadGalleryModal = document.getElementById('jmcad-gallery');
+  const jmcadGalleryStage = document.getElementById('jmcad-gallery-stage');
+  const jmcadGalleryTitle = document.getElementById('jmcad-gallery-title');
+  const jmcadGalleryThumbs = [...document.querySelectorAll('[data-jmcad-gallery-index]')];
+  let activeJmcadGalleryIndex = 0;
+
+  function setJmcadGalleryItem(index) {
+    activeJmcadGalleryIndex = (index + jmcadGalleryItems.length) % jmcadGalleryItems.length;
+    const item = jmcadGalleryItems[activeJmcadGalleryIndex];
+    jmcadGalleryStage.innerHTML = '';
+    jmcadGalleryTitle.textContent = item.name;
+
+    if (item.type === 'video') {
+      const video = document.createElement('video');
+      video.src = item.src;
+      video.controls = true;
+      video.muted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.setAttribute('aria-label', item.alt);
+      jmcadGalleryStage.appendChild(video);
+    } else {
+      const image = document.createElement('img');
+      image.src = item.src;
+      image.alt = item.alt;
+      jmcadGalleryStage.appendChild(image);
+    }
+
+    jmcadGalleryThumbs.forEach((thumb, thumbIndex) => {
+      thumb.classList.toggle('is-active', thumbIndex === activeJmcadGalleryIndex);
+    });
+  }
+
+  function openJmcadGallery() {
+    jmcadGalleryModal.classList.add('is-open');
+    jmcadGalleryModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    setJmcadGalleryItem(0);
+    document.querySelector('[data-jmcad-gallery-close]').focus();
+  }
+
+  function closeJmcadGallery() {
+    jmcadGalleryModal.classList.remove('is-open');
+    jmcadGalleryModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    document.querySelector('[data-jmcad-gallery-open]').focus();
+  }
+
+  document.querySelector('[data-jmcad-gallery-open]').addEventListener('click', openJmcadGallery);
+  document.querySelector('[data-jmcad-gallery-close]').addEventListener('click', closeJmcadGallery);
+  document.querySelector('[data-jmcad-gallery-prev]').addEventListener('click', () => setJmcadGalleryItem(activeJmcadGalleryIndex - 1));
+  document.querySelector('[data-jmcad-gallery-next]').addEventListener('click', () => setJmcadGalleryItem(activeJmcadGalleryIndex + 1));
+  jmcadGalleryThumbs.forEach((thumb) => {
+    thumb.addEventListener('click', () => setJmcadGalleryItem(Number(thumb.dataset.jmcadGalleryIndex)));
+  });
+  jmcadGalleryModal.addEventListener('click', (event) => {
+    if (event.target === jmcadGalleryModal) closeJmcadGallery();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (!jmcadGalleryModal.classList.contains('is-open')) return;
+    if (event.key === 'Escape') closeJmcadGallery();
+    if (event.key === 'ArrowLeft') setJmcadGalleryItem(activeJmcadGalleryIndex - 1);
+    if (event.key === 'ArrowRight') setJmcadGalleryItem(activeJmcadGalleryIndex + 1);
+  });
+
+  const ansysGalleryItems = [
+    { src: 'assets/images/ansys-exhaust-temperature-contour.png', alt: 'ANSYS temperature contour of exhaust system', name: 'Temperature Contour' },
+    { src: 'assets/images/ansys-exhaust-pressure-contour.png', alt: 'ANSYS pressure contour of exhaust system', name: 'Pressure Contour' },
+    { src: 'assets/images/ansys-exhaust-manifold-temperature.png', alt: 'ANSYS manifold temperature result', name: 'Manifold Temperature' },
+    { src: 'assets/images/ansys-exhaust-manifold-deformation.png', alt: 'ANSYS manifold total deformation result', name: 'Total Deformation' }
+  ];
+
+  const ansysGalleryModal = document.getElementById('ansys-gallery');
+  const ansysGalleryStage = document.getElementById('ansys-gallery-stage');
+  const ansysGalleryTitle = document.getElementById('ansys-gallery-title');
+  const ansysGalleryThumbs = [...document.querySelectorAll('[data-ansys-gallery-index]')];
+  let activeAnsysGalleryIndex = 0;
+
+  function setAnsysGalleryItem(index) {
+    activeAnsysGalleryIndex = (index + ansysGalleryItems.length) % ansysGalleryItems.length;
+    const item = ansysGalleryItems[activeAnsysGalleryIndex];
+    ansysGalleryStage.innerHTML = '';
+    ansysGalleryTitle.textContent = item.name;
+
+    const image = document.createElement('img');
+    image.src = item.src;
+    image.alt = item.alt;
+    ansysGalleryStage.appendChild(image);
+
+    ansysGalleryThumbs.forEach((thumb, thumbIndex) => {
+      thumb.classList.toggle('is-active', thumbIndex === activeAnsysGalleryIndex);
+    });
+  }
+
+  function openAnsysGallery() {
+    ansysGalleryModal.classList.add('is-open');
+    ansysGalleryModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    setAnsysGalleryItem(0);
+    document.querySelector('[data-ansys-gallery-close]').focus();
+  }
+
+  function closeAnsysGallery() {
+    ansysGalleryModal.classList.remove('is-open');
+    ansysGalleryModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    document.querySelector('[data-ansys-gallery-open]').focus();
+  }
+
+  document.querySelector('[data-ansys-gallery-open]').addEventListener('click', openAnsysGallery);
+  document.querySelector('[data-ansys-gallery-close]').addEventListener('click', closeAnsysGallery);
+  document.querySelector('[data-ansys-gallery-prev]').addEventListener('click', () => setAnsysGalleryItem(activeAnsysGalleryIndex - 1));
+  document.querySelector('[data-ansys-gallery-next]').addEventListener('click', () => setAnsysGalleryItem(activeAnsysGalleryIndex + 1));
+  ansysGalleryThumbs.forEach((thumb) => {
+    thumb.addEventListener('click', () => setAnsysGalleryItem(Number(thumb.dataset.ansysGalleryIndex)));
+  });
+  ansysGalleryModal.addEventListener('click', (event) => {
+    if (event.target === ansysGalleryModal) closeAnsysGallery();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (!ansysGalleryModal.classList.contains('is-open')) return;
+    if (event.key === 'Escape') closeAnsysGallery();
+    if (event.key === 'ArrowLeft') setAnsysGalleryItem(activeAnsysGalleryIndex - 1);
+    if (event.key === 'ArrowRight') setAnsysGalleryItem(activeAnsysGalleryIndex + 1);
+  });
+</script>
+
+</body>
+</html>
