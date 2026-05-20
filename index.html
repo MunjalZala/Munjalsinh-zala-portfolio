@@ -778,6 +778,58 @@
     .exp-item { grid-template-columns: 1fr; gap: 12px; }
     footer { flex-direction: column; gap: 8px; text-align: center; }
   }
+
+  /* Cert badge button */
+  button.skill-badge {
+    font-family: var(--mono);
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+    outline: none;
+  }
+  button.skill-badge:hover,
+  button.skill-badge:focus-visible {
+    background: var(--accent);
+    color: #0f0f0f;
+    border-color: var(--accent);
+  }
+  button.skill-badge:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .cert-modal {
+    position: fixed; inset: 0; z-index: 300;
+    display: none; align-items: center; justify-content: center;
+    padding: 32px;
+    background: rgba(10,10,10,0.88);
+    backdrop-filter: blur(14px);
+    opacity: 0; transition: opacity 0.22s ease;
+  }
+  .cert-modal.is-open { display: flex; }
+  .cert-modal.is-visible { opacity: 1; }
+  .cert-panel {
+    max-width: min(820px, 100%); width: 100%;
+    transform: translateY(12px) scale(0.98);
+    transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 0.5px solid var(--line2);
+  }
+  .cert-modal.is-visible .cert-panel { transform: translateY(0) scale(1); }
+  .cert-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px; background: var(--bg3);
+    border-bottom: 0.5px solid var(--line);
+  }
+  .cert-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+  .cert-close {
+    padding: 4px 10px; border: 0.5px solid var(--line2);
+    background: transparent; color: var(--muted);
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; transition: color 0.15s, border-color 0.15s;
+  }
+  .cert-close:hover { color: var(--text); border-color: var(--muted); }
+  .cert-img-wrap { background: #f5f5f3; }
+  .cert-img-wrap img { width: 100%; display: block; max-height: calc(100vh - 180px); object-fit: contain; }
+
 </style>
 </head>
 <body>
@@ -1001,7 +1053,7 @@
           <div class="skill-row">
             <span class="skill-name">SolidWorks</span>
             <div style="display:flex;align-items:center;gap:8px;">
-              <span class="skill-badge">Certified</span>
+              <button class="skill-badge" type="button" data-cert="solidworks" title="View SolidWorks certificate">Certified ↗</button>
               <div class="skill-level">
                 <div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div>
               </div>
@@ -1010,7 +1062,7 @@
           <div class="skill-row">
             <span class="skill-name">AutoCAD</span>
             <div style="display:flex;align-items:center;gap:8px;">
-              <span class="skill-badge">Certified</span>
+              <button class="skill-badge" type="button" data-cert="autocad" title="View AutoCAD certificate">Certified ↗</button>
               <div class="skill-level">
                 <div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot"></div>
               </div>
@@ -1449,6 +1501,65 @@
     if (event.key === 'Escape') closeAnsysGallery();
     if (event.key === 'ArrowLeft') setAnsysGalleryItem(activeAnsysGalleryIndex - 1);
     if (event.key === 'ArrowRight') setAnsysGalleryItem(activeAnsysGalleryIndex + 1);
+  });
+</script>
+
+
+<!-- Certificate Modal -->
+<div class="cert-modal" id="cert-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Certificate viewer">
+  <div class="cert-panel">
+    <div class="cert-header">
+      <span class="cert-label" id="cert-modal-label">Certificate</span>
+      <button class="cert-close" type="button" id="cert-modal-close">Close &times;</button>
+    </div>
+    <div class="cert-img-wrap">
+      <img id="cert-modal-img" src="" alt="Certificate" />
+    </div>
+  </div>
+</div>
+<script>
+  const certData = {
+    solidworks: {
+      label: 'SolidWorks 2023 – Certificate of Completion',
+      src: 'assets/images/Solidworks-Certificate.jpg'
+    },
+    autocad: {
+      label: 'AutoCAD 2023 – Certificate of Completion',
+      src: 'assets/images/Autocad-Certificate.jpg'
+    }
+  };
+  const certModal = document.getElementById('cert-modal');
+  const certModalImg = document.getElementById('cert-modal-img');
+  const certModalLabel = document.getElementById('cert-modal-label');
+  let lastCertOpener = null;
+  function openCert(key, el) {
+    const cert = certData[key];
+    certModalImg.src = cert.src;
+    certModalImg.alt = cert.label;
+    certModalLabel.textContent = cert.label;
+    lastCertOpener = el;
+    certModal.classList.add('is-open');
+    certModal.removeAttribute('aria-hidden');
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => requestAnimationFrame(() => certModal.classList.add('is-visible')));
+    document.getElementById('cert-modal-close').focus();
+  }
+  function closeCert() {
+    certModal.classList.remove('is-visible');
+    setTimeout(() => {
+      certModal.classList.remove('is-open');
+      certModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (lastCertOpener) lastCertOpener.focus();
+    }, 220);
+  }
+  document.getElementById('cert-modal-close').addEventListener('click', closeCert);
+  certModal.addEventListener('click', e => { if (e.target === certModal) closeCert(); });
+  document.addEventListener('keydown', e => {
+    if (certModal.classList.contains('is-open') && e.key === 'Escape') closeCert();
+  });
+  document.querySelectorAll('[data-cert]').forEach(btn => {
+    btn.addEventListener('click', () => openCert(btn.dataset.cert, btn));
   });
 </script>
 
