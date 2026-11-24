@@ -10,1786 +10,850 @@
 <meta property="og:description" content="Mechanical design, CAD and FEM for aerospace and robotics. CanSat 2026 Mechanical Design Lead (14th of 36). Incoming Mechanical Hardware Design Intern at Quantum Systems.">
 <meta property="og:image" content="https://munjalzala.github.io/Munjalsinh-zala-portfolio/assets/images/cansat-01.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23111'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' dominant-baseline='middle' font-family='Arial' font-weight='700' font-size='28' fill='%23fff'%3EMZ%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23123B6B'/%3E%3Cpath d='M14 50 L28 30 L44 22' stroke='%23E6EEF8' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='14' cy='50' r='5' fill='%23FFC233'/%3E%3Ccircle cx='28' cy='30' r='4' fill='%23E6EEF8'/%3E%3Ccircle cx='44' cy='22' r='4' fill='%23E6EEF8'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #0f0f0f;
-    --bg2: #161616;
-    --bg3: #1e1e1e;
-    --line: rgba(255,255,255,0.08);
-    --line2: rgba(255,255,255,0.15);
-    --text: #f0ede6;
-    --muted: #888880;
-    --accent: #e8d5a0;
-    --accent2: #c4a96a;
-    --accent-dim: rgba(232,213,160,0.12);
-    --mono: 'DM Mono', monospace;
-    --display: 'Syne', sans-serif;
+    --cyan: #123B6B;       /* cyanotype sheet */
+    --prussian: #0B2545;   /* deep blueprint */
+    --line: #E6EEF8;       /* drawing line on blue */
+    --line-dim: rgba(230, 238, 248, 0.55);
+    --grid: rgba(230, 238, 248, 0.07);
+    --vellum: #EEF2F7;     /* light drafting film */
+    --ink: #0F1E33;        /* text on vellum */
+    --ink-dim: #4A5B73;
+    --rule: #C7D2E0;
+    --marker: #FFC233;     /* highlighter / CAD selection */
+    --max: 1240px;
+    --gutter: clamp(20px, 4vw, 56px);
   }
-
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
-
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 14px;
-    line-height: 1.7;
-    overflow-x: hidden;
+    font-family: 'Archivo', system-ui, sans-serif;
+    font-variation-settings: 'wdth' 100;
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--vellum);
+    -webkit-font-smoothing: antialiased;
   }
-
-  /* NAV */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 48px;
-    height: 64px;
-    border-bottom: 0.5px solid var(--line);
-    background: rgba(15,15,15,0.92);
-    backdrop-filter: blur(12px);
-  }
-  .nav-logo {
-    font-family: var(--display);
-    font-weight: 700;
-    font-size: 16px;
-    letter-spacing: -0.02em;
-    color: var(--text);
-    text-decoration: none;
-  }
-  .nav-links { display: flex; gap: 32px; }
-  .nav-links a {
-    color: var(--muted);
-    text-decoration: none;
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--accent); }
-
-  /* HERO */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 80px 48px 80px;
-    position: relative;
-    border-bottom: 0.5px solid var(--line);
-    overflow: hidden;
-  }
-  .hero-grid-bg {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--line) 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.4) 40%, transparent 100%);
-  }
-  .hero-accent-circle {
-    position: absolute;
-    top: -200px; right: -200px;
-    width: 600px; height: 600px;
-    border-radius: 50%;
-    border: 0.5px solid var(--line2);
-    pointer-events: none;
-  }
-  .hero-accent-circle2 {
-    position: absolute;
-    top: -100px; right: -100px;
-    width: 400px; height: 400px;
-    border-radius: 50%;
-    border: 0.5px solid var(--line);
-    pointer-events: none;
-  }
-  .hero-label {
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 20px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .hero-label::before {
-    content: '';
-    display: block;
-    width: 32px; height: 1px;
-    background: var(--accent2);
-  }
-  h1 {
-    font-family: var(--display);
-    font-size: clamp(48px, 7.5vw, 92px);
+  .readout, .rev td:first-child, .bom td:first-child, .tb-v { font-variant-numeric: tabular-nums; }
+  img, video { display: block; max-width: 100%; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--marker); outline-offset: 3px; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+  .display {
+    font-variation-settings: 'wdth' 125;
     font-weight: 800;
+    letter-spacing: -0.01em;
     line-height: 0.95;
-    letter-spacing: -0.03em;
-    color: var(--text);
-    position: relative;
-    margin-bottom: 32px;
   }
-  h1 span { color: var(--accent); }
-  .hero-sub {
-    font-size: 13px;
-    color: var(--muted);
-    max-width: 520px;
-    line-height: 1.9;
-    position: relative;
-    margin-bottom: 36px;
-  }
-  .hero-chips {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    position: relative;
-    margin-bottom: 44px;
-  }
-  .chip {
-    font-size: 10px;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    padding: 5px 12px;
-    border: 0.5px solid var(--line2);
-    color: var(--muted);
-    background: var(--bg3);
-  }
-  .chip.accent { border-color: var(--accent2); color: var(--accent); background: var(--accent-dim); }
-  .hero-cta {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    position: relative;
-  }
-  .btn-primary {
-    padding: 14px 28px;
-    background: var(--accent);
-    color: #0f0f0f;
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    transition: background 0.2s;
-  }
-  .btn-primary:hover { background: var(--accent2); }
-  .btn-ghost {
-    padding: 14px 28px;
-    background: transparent;
-    color: var(--muted);
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    border: 0.5px solid var(--line2);
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    transition: color 0.2s, border-color 0.2s;
-  }
-  .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
-  .hero-stats {
-    position: absolute;
-    bottom: 80px; right: 48px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-items: flex-end;
-  }
-  .hero-stat-val {
-    font-family: var(--display);
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--text);
-    line-height: 1;
-  }
-  .hero-stat-label {
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    text-align: right;
-  }
+  .small { font-size: 13px; line-height: 1.4; }
 
-  /* SECTIONS */
-  section {
-    padding: 100px 48px;
-    border-bottom: 0.5px solid var(--line);
-  }
-  .section-header {
-    display: flex;
-    align-items: baseline;
-    gap: 16px;
-    margin-bottom: 64px;
-  }
-  .section-num {
-    font-size: 11px;
-    color: var(--accent);
-    letter-spacing: 0.1em;
-  }
-  h2 {
-    font-family: var(--display);
-    font-size: 34px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--text);
-  }
-  .section-line {
-    flex: 1;
-    height: 0.5px;
-    background: var(--line);
-    margin-left: 12px;
-  }
-
-  /* PROJECTS */
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 1px;
-  }
-  @media (min-width: 900px) {
-    .projects-grid { grid-template-columns: repeat(2, 1fr); }
-    background: var(--line);
-    border: 0.5px solid var(--line);
-  }
-  .project-card {
-    background: var(--bg);
-    padding: 36px;
-    cursor: pointer;
-    transition: background 0.2s;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    min-height: 300px;
-  }
-  .project-card:hover { background: var(--bg3); }
-  .project-card:hover .project-arrow { opacity: 1; transform: translate(0,0); }
-
-  .project-img {
-    width: 100%;
-    aspect-ratio: 16/9;
-    object-fit: cover;
-    border: 0.5px solid var(--line);
-    margin-bottom: 4px;
-    display: block;
-    background: var(--bg3);
-  }
-  .project-gallery {
-    display: grid;
-    gap: 8px;
-    margin-bottom: 4px;
-  }
-  .gallery-open {
-    position: relative;
-    display: block;
-    padding: 0;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    text-align: left;
-  }
-  .project-gallery-main {
-    margin-bottom: 0;
-  }
-  .gallery-open:hover .project-gallery-main,
-  .gallery-open:focus-visible .project-gallery-main {
-    border-color: var(--accent2);
-  }
-  .gallery-badge {
-    position: absolute;
-    right: 12px;
-    bottom: 12px;
-    padding: 6px 10px;
-    background: rgba(15,15,15,0.82);
-    border: 0.5px solid var(--line2);
-    color: var(--accent);
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-  .project-gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-  }
-  .project-gallery-thumb {
-    width: 100%;
-    aspect-ratio: 16/10;
-    object-fit: cover;
-    border: 0.5px solid var(--line);
-    background: var(--bg3);
-    display: block;
-  }
-  .component-gallery {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    margin-bottom: 4px;
-  }
-  .component-item {
-    border: 0.5px solid var(--line);
-    background: var(--bg3);
-    overflow: hidden;
-  }
-  .component-item img,
-  .component-item video {
-    width: 100%;
-    aspect-ratio: 16/10;
-    object-fit: cover;
-    display: block;
-    background: #f4f4f4;
-  }
-  .component-label {
-    display: block;
-    padding: 8px 10px;
-    font-size: 9px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    border-top: 0.5px solid var(--line);
-  }
-  .gallery-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 200;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 28px;
-    background: rgba(15,15,15,0.92);
-    backdrop-filter: blur(10px);
-  }
-  .gallery-modal.is-open { display: flex; }
-  .gallery-panel {
-    width: min(1180px, 100%);
-    max-height: calc(100vh - 56px);
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 220px;
-    gap: 16px;
-  }
-  .gallery-stage {
-    min-height: 0;
-    border: 0.5px solid var(--line2);
-    background: var(--bg2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .gallery-stage img,
-  .gallery-stage video {
-    width: 100%;
-    max-height: calc(100vh - 140px);
-    object-fit: contain;
-    display: block;
-  }
-  .gallery-note {
-    padding: 12px;
-    border: 0.5px solid var(--line);
-    background: rgba(255,255,255,0.02);
-    color: var(--muted);
-    font-size: 10px;
-    line-height: 1.7;
-  }
-  .gallery-title {
-    padding: 12px;
-    border: 0.5px solid var(--line2);
-    background: var(--bg3);
-    color: var(--accent);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-  .gallery-side {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .gallery-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-  .gallery-btn {
-    padding: 10px;
-    border: 0.5px solid var(--line2);
-    background: var(--bg3);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
-  }
-  .gallery-btn:hover,
-  .gallery-btn:focus-visible {
-    border-color: var(--accent2);
-    color: var(--accent);
-  }
-  .gallery-close { grid-column: 1 / -1; }
-  .gallery-thumbs {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    overflow: auto;
-    padding-right: 2px;
-  }
-  .gallery-thumb-btn {
-    padding: 0;
-    border: 0.5px solid var(--line);
-    background: var(--bg3);
-    cursor: pointer;
-  }
-  .gallery-thumb-btn.is-active,
-  .gallery-thumb-btn:hover,
-  .gallery-thumb-btn:focus-visible {
-    border-color: var(--accent2);
-  }
-  .gallery-thumb-btn img {
-    width: 100%;
-    aspect-ratio: 16/10;
-    object-fit: cover;
-    display: block;
-  }
-  .gallery-thumb-label {
-    display: block;
-    padding: 6px;
-    color: var(--muted);
-    font-family: var(--mono);
-    font-size: 8px;
-    letter-spacing: 0.06em;
-    line-height: 1.3;
-    text-transform: uppercase;
-    text-align: left;
-  }
-  .project-img-placeholder {
-    width: 100%;
-    aspect-ratio: 16/9;
-    background: var(--bg3);
-    border: 0.5px solid var(--line);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 4px;
-    position: relative;
-    overflow: hidden;
-  }
-  .project-img-placeholder svg {
-    position: absolute;
-    opacity: 0.05;
-    width: 70%;
-  }
-  .project-img-placeholder-label {
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    position: relative;
-  }
-  .upload-hint {
-    font-size: 9px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(136,136,128,0.5);
-    position: relative;
-  }
-  .project-note {
-    font-size: 10px;
-    color: var(--muted);
-    line-height: 1.7;
-    padding: 12px;
-    border: 0.5px solid var(--line);
-    background: rgba(255,255,255,0.02);
-  }
-  .project-tag {
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--accent);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .project-tag::before {
-    content: '';
-    display: block;
-    width: 18px; height: 1px;
-    background: var(--accent2);
-  }
-  .project-title {
-    font-family: var(--display);
-    font-size: 19px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    color: var(--text);
-    line-height: 1.2;
-  }
-  .project-desc {
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.85;
-    flex: 1;
-  }
-  .project-bullets {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    flex: 1;
-  }
-  .project-bullets li {
-    font-size: 11px;
-    color: var(--muted);
-    padding-left: 14px;
-    position: relative;
-    line-height: 1.7;
-  }
-  .project-bullets li::before {
-    content: '—';
-    position: absolute;
-    left: 0;
-    color: var(--accent2);
-    font-size: 10px;
-  }
-  .project-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 16px;
-    border-top: 0.5px solid var(--line);
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.04em;
-  }
-  .project-arrow {
-    opacity: 0;
-    transform: translate(-4px, 4px);
-    transition: opacity 0.2s, transform 0.2s;
-    color: var(--accent);
-  }
-  .project-card.add-card {
-    border: 1px dashed rgba(255,255,255,0.1);
-    background: transparent;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: var(--muted);
-    cursor: default;
-  }
-  .add-icon { font-size: 28px; margin-bottom: 10px; opacity: 0.3; }
-  .add-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); opacity: 0.5; }
-
-  /* ABOUT */
-  .about-layout {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 80px;
-    align-items: start;
-  }
-  .about-text p {
-    color: var(--muted);
-    font-size: 13px;
-    line-height: 1.95;
-    margin-bottom: 18px;
-  }
-  .about-text p strong { color: var(--text); font-weight: 500; }
-  .about-text p:last-child { margin-bottom: 0; }
-
-  .skills-panel { display: flex; flex-direction: column; gap: 24px; }
-  .skills-group-label {
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .skills-group-label::after {
-    content: '';
-    flex: 1;
-    height: 0.5px;
-    background: var(--line);
-  }
-  .skills-list {
-    display: flex;
-    flex-direction: column;
-    border: 0.5px solid var(--line);
-  }
-  .skill-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 13px 18px;
-    border-bottom: 0.5px solid var(--line);
-    font-size: 12px;
-  }
-  .skill-row:last-child { border-bottom: none; }
-  .skill-name { color: var(--text); }
-  .skill-badge {
-    font-size: 9px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border: 0.5px solid var(--accent2);
-    color: var(--accent);
-    background: var(--accent-dim);
-  }
-  .skill-level {
-    display: flex;
-    gap: 3px;
-  }
-  .skill-dot {
-    width: 5px; height: 5px;
-    border-radius: 50%;
-    background: var(--line2);
-  }
-  .skill-dot.filled { background: var(--accent); }
-
-  /* EXPERIENCE */
-  .exp-list { display: flex; flex-direction: column; gap: 0; }
-  .exp-item {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: 48px;
-    padding: 40px 0;
-    border-bottom: 0.5px solid var(--line);
-  }
-  .exp-item:first-child { padding-top: 0; }
-  .exp-item:last-child { border-bottom: none; }
-  .exp-meta { display: flex; flex-direction: column; gap: 6px; }
-  .exp-date {
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-    text-transform: uppercase;
-  }
-  .exp-company { font-size: 12px; color: var(--muted); line-height: 1.6; }
-  .exp-role {
-    font-family: var(--display);
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    color: var(--text);
-    margin-bottom: 12px;
-    line-height: 1.2;
-  }
-  .exp-bullets {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .exp-bullets li {
-    font-size: 12px;
-    color: var(--muted);
-    padding-left: 16px;
-    position: relative;
-    line-height: 1.75;
-  }
-  .exp-bullets li::before {
-    content: '—';
-    position: absolute;
-    left: 0;
-    color: var(--accent2);
-    font-size: 10px;
-    top: 1px;
-  }
-
-  /* CONTACT */
-  .contact-layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: start;
-  }
-  .contact-info { display: flex; flex-direction: column; gap: 0; border: 0.5px solid var(--line); }
-  .contact-item {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    padding: 20px 24px;
-    border-bottom: 0.5px solid var(--line);
-    transition: background 0.2s;
-  }
-  .contact-item:last-child { border-bottom: none; }
-  .contact-item:hover { background: var(--bg3); }
-  .contact-icon {
-    width: 32px; height: 32px;
-    border: 0.5px solid var(--line2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--accent);
-    font-size: 13px;
-    flex-shrink: 0;
-    font-family: var(--display);
-  }
-  .contact-item-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 2px; }
-  .contact-item-val { font-size: 12px; color: var(--text); }
-  .contact-item a { color: var(--text); text-decoration: none; }
-  .contact-item a:hover { color: var(--accent); }
-  .contact-cta {
-    padding: 40px;
-    border: 0.5px solid var(--line);
-    background: var(--bg2);
-  }
-  .contact-cta h3 {
-    font-family: var(--display);
-    font-size: 24px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--text);
-    margin-bottom: 14px;
-  }
-  .contact-cta p { font-size: 12px; color: var(--muted); line-height: 1.9; margin-bottom: 24px; }
-
-  /* FOOTER */
-  footer {
-    padding: 28px 48px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-  }
-
-  /* RESPONSIVE */
-  @media (max-width: 900px) {
-    nav { padding: 0 20px; }
-    .nav-links { gap: 20px; }
-    .hero, section { padding-left: 24px; padding-right: 24px; }
-    h1 { font-size: 42px; }
-    .hero-stats { display: none; }
-    .project-gallery-grid { grid-template-columns: repeat(2, 1fr); }
-    .gallery-modal { padding: 16px; }
-    .gallery-panel { grid-template-columns: 1fr; }
-    .gallery-stage img { max-height: 56vh; }
-    .gallery-thumbs { grid-template-columns: repeat(4, 1fr); }
-    .about-layout, .contact-layout { grid-template-columns: 1fr; gap: 48px; }
-    .exp-item { grid-template-columns: 1fr; gap: 12px; }
-    footer { flex-direction: column; gap: 8px; text-align: center; }
-  }
-
-  /* Cert badge button */
-  button.skill-badge {
-    font-family: var(--mono);
-    cursor: pointer;
-    transition: background 0.2s, border-color 0.2s, color 0.2s;
-    outline: none;
-  }
-  button.skill-badge:hover,
-  button.skill-badge:focus-visible {
-    background: var(--accent);
-    color: #0f0f0f;
-    border-color: var(--accent);
-  }
-  button.skill-badge:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-  .cert-modal {
-    position: fixed; inset: 0; z-index: 300;
-    display: none; align-items: center; justify-content: center;
-    padding: 32px;
-    background: rgba(10,10,10,0.88);
-    backdrop-filter: blur(14px);
-    opacity: 0; transition: opacity 0.22s ease;
-  }
-  .cert-modal.is-open { display: flex; }
-  .cert-modal.is-visible { opacity: 1; }
-  .cert-panel {
-    max-width: min(820px, 100%); width: 100%;
-    transform: translateY(12px) scale(0.98);
-    transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
-    border: 0.5px solid var(--line2);
-  }
-  .cert-modal.is-visible .cert-panel { transform: translateY(0) scale(1); }
-  .cert-header {
+  /* ---------- NAV ---------- */
+  nav {
+    position: fixed; inset: 0 0 auto 0; z-index: 50;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 20px; background: var(--bg3);
-    border-bottom: 0.5px solid var(--line);
+    padding: 40px calc(var(--gutter) + 20px) 16px;
+    color: var(--line);
+    transition: background .3s, color .3s, box-shadow .3s, padding .3s;
   }
-  .cert-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
-  .cert-close {
-    padding: 4px 10px; border: 0.5px solid var(--line2);
-    background: transparent; color: var(--muted);
-    font-family: var(--mono); font-size: 10px;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    cursor: pointer; transition: color 0.15s, border-color 0.15s;
-  }
-  .cert-close:hover { color: var(--text); border-color: var(--muted); }
-  .cert-img-wrap { background: #f5f5f3; }
-  .cert-img-wrap img { width: 100%; display: block; max-height: calc(100vh - 180px); object-fit: contain; }
+  nav.solid { padding: 16px var(--gutter); background: rgba(238, 242, 247, 0.92); color: var(--ink); backdrop-filter: blur(10px); box-shadow: 0 1px 0 var(--rule); }
+  .brand { font-variation-settings: 'wdth' 125; font-weight: 800; text-decoration: none; font-size: 18px; }
+  .nav-links { display: flex; gap: clamp(14px, 3vw, 32px); }
+  .nav-links a { text-decoration: none; font-size: 15px; font-weight: 500; opacity: .85; }
+  .nav-links a:hover { opacity: 1; text-decoration: underline; text-underline-offset: 5px; }
 
+  /* ---------- HERO (blueprint sheet) ---------- */
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 24px 24px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 24px 24px,
+      radial-gradient(ellipse at 70% 40%, #17477F 0%, var(--cyan) 45%, var(--prussian) 100%);
+    color: var(--line);
+    overflow: hidden;
+    display: flex;
+  }
+  .sheet-frame { position: absolute; left: 14px; top: 14px; width: calc(100% - 28px); height: calc(100% - 28px); pointer-events: none; }
+  .sheet-frame rect { fill: none; stroke: var(--line-dim); stroke-width: 1; }
+  .sheet-frame text { fill: var(--line-dim); font-size: 11px; font-weight: 500; font-family: 'Archivo', sans-serif; }
+  .hero-inner {
+    position: relative; z-index: 2;
+    width: 100%; max-width: var(--max); margin: 0 auto;
+    padding: 110px var(--gutter) 40px;
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: 24px; align-items: center;
+  }
+  .hero h1 { font-size: clamp(48px, 6.6vw, 104px); }
+  .hero h1 span { display: block; }
+  .hero h1 .ln2 { color: transparent; -webkit-text-stroke: 1.5px var(--line); }
+  .hero-lede { margin-top: 28px; max-width: 34em; font-size: clamp(16px, 1.4vw, 19px); color: rgba(230, 238, 248, 0.86); }
+  .hero-lede strong { color: var(--line); font-weight: 600; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 22px; font: inherit; font-size: 15px; font-weight: 600;
+    text-decoration: none; cursor: pointer; border-radius: 2px;
+    transition: transform .15s, background .2s, color .2s;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-marker { background: var(--marker); color: var(--prussian); border: 1px solid var(--marker); }
+  .btn-marker:hover { background: #FFD266; }
+  .btn-line { background: transparent; color: var(--line); border: 1px solid var(--line-dim); }
+  .btn-line:hover { border-color: var(--line); background: rgba(230,238,248,.06); }
 
-  /* Competition photo overlays */
-  .comp-photo-wrap img { transition: opacity 0.2s; }
-  .comp-photo-wrap:hover img { opacity: 0.82; }
-  .comp-photo-overlay {
-    position: absolute; inset: 0;
-    display: flex; align-items: flex-end;
-    background: linear-gradient(to top, rgba(10,10,10,0.72) 0%, transparent 55%);
-    opacity: 0; transition: opacity 0.2s;
-    pointer-events: none;
+  /* arm drawing */
+  .arm-stage { position: relative; width: 100%; }
+  .arm-stage svg { aspect-ratio: 600 / 552; height: auto; touch-action: none; }
+  .arm-stage svg { width: 100%; height: 100%; overflow: visible; }
+  .arm-link { stroke: var(--line); stroke-width: 2; fill: rgba(230, 238, 248, 0.04); }
+  .arm-center { stroke: var(--line-dim); stroke-width: 1; stroke-dasharray: 10 3 2 3; }
+  .arm-joint { fill: var(--cyan); stroke: var(--line); stroke-width: 2; }
+  .arm-joint-dot { fill: var(--line); }
+  .arm-base { fill: none; stroke: var(--line); stroke-width: 2; }
+  .arm-hatch { stroke: var(--line-dim); stroke-width: 1; }
+  .dim { stroke: var(--marker); stroke-width: 1; fill: none; }
+  .dim-text { fill: var(--marker); font-size: 13px; font-weight: 600; font-family: 'Archivo', sans-serif; }
+  .target { stroke: var(--marker); stroke-width: 1; fill: none; }
+  .trail { stroke: var(--marker); stroke-width: 1.5; fill: none; stroke-dasharray: 4 4; opacity: .8; }
+  .readout {
+    position: relative; margin: 6px 0 0 auto; max-width: 340px;
+    display: grid; grid-template-columns: auto auto; border: 1px solid var(--line-dim);
+    background: rgba(11, 37, 69, 0.75); backdrop-filter: blur(4px);
+    font-size: 13px; min-width: 260px;
   }
-  .comp-photo-wrap:hover .comp-photo-overlay { opacity: 1; }
-  .comp-photo-label {
-    padding: 12px 14px;
-    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--accent); line-height: 1.4;
-    font-family: var(--mono);
+  .readout > div { padding: 7px 12px; border-bottom: 1px solid rgba(230,238,248,.2); }
+  .readout > div:nth-child(odd) { color: var(--line-dim); border-right: 1px solid rgba(230,238,248,.2); }
+  .readout .ro-actions { grid-column: 1 / -1; display: flex; gap: 6px; padding: 8px; border-bottom: 0; border-right: 0; color: var(--line); }
+  .ro-btn {
+    flex: 1; padding: 8px 10px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+    background: transparent; color: var(--line); border: 1px solid var(--line-dim); border-radius: 2px;
   }
+  .ro-btn:hover:not(:disabled) { border-color: var(--line); }
+  .ro-btn:disabled { opacity: .4; cursor: default; }
+  .ro-btn.rec { color: var(--marker); border-color: var(--marker); }
+  .ro-btn.rec.on { background: var(--marker); color: var(--prussian); }
+  .arm-hint { font-size: 14px; color: var(--line-dim); max-width: 30em; margin-bottom: 4px; }
+  .arm-hint a { color: var(--marker); }
+
+  .title-block {
+    display: grid; border: 1px solid currentColor;
+    grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr));
+  }
+  .title-block > div { padding: 8px 12px; border-right: 1px solid currentColor; min-width: 0; }
+  .title-block > div:last-child { border-right: 0; }
+  .tb-k { font-size: 12px; opacity: .7; display: block; }
+  .tb-v { font-size: 14px; font-weight: 600; display: block; }
+  .hero .title-block { color: var(--line-dim); margin-top: 44px; max-width: 620px; }
+  .hero .title-block .tb-v { color: var(--line); }
+
+  /* draw-in on load */
+  .draw { stroke-dasharray: var(--len); stroke-dashoffset: var(--len); animation: draw 1.4s cubic-bezier(.6,.1,.2,1) forwards; animation-delay: var(--d, 0s); }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  .fade-in { opacity: 0; animation: fade .8s ease forwards; animation-delay: var(--d, 0s); }
+  @keyframes fade { to { opacity: 1; } }
+
+  /* ---------- SECTIONS ---------- */
+  section { padding: clamp(72px, 10vw, 128px) 0; }
+  .sec-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: clamp(36px, 5vw, 64px); flex-wrap: wrap; }
+  .sec-head h2 { font-size: clamp(40px, 6vw, 80px); }
+  .sec-head p { max-width: 30em; color: var(--ink-dim); }
+
+  /* ---------- PROJECT SHEETS ---------- */
+  .sheet {
+    position: relative; background: #fff; border: 1px solid var(--ink);
+    margin-bottom: clamp(40px, 6vw, 72px);
+    box-shadow: 8px 8px 0 var(--rule);
+  }
+  .sheet-body { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+  .sheet.flip .sheet-media { order: 2; border-right: 0; border-left: 1px solid var(--ink); }
+  .sheet-media { border-right: 1px solid var(--ink); background: var(--prussian); position: relative; display: flex; flex-direction: column; }
+  .media-main { position: relative; flex: 1; min-height: 340px; cursor: zoom-in; border: 0; padding: 0; background: none; overflow: hidden; display: block; width: 100%; }
+  .media-main img, .media-main video { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; transition: transform .6s ease; }
+  .media-main video.contain { object-fit: contain; background: #000; }
+  .media-main:hover img, .media-main:hover video { transform: scale(1.025); }
+  .media-count {
+    position: absolute; left: 14px; bottom: 14px; z-index: 2;
+    background: var(--marker); color: var(--prussian); font-size: 13px; font-weight: 700;
+    padding: 6px 10px; border-radius: 2px;
+  }
+  .strip { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--ink); }
+  .strip button { border: 0; border-right: 1px solid rgba(230,238,248,.25); padding: 0; cursor: zoom-in; aspect-ratio: 4 / 3; overflow: hidden; background: #000; }
+  .strip button:last-child { border-right: 0; }
+  .strip img { width: 100%; height: 100%; object-fit: cover; opacity: .85; transition: opacity .2s, transform .4s; }
+  .strip button:hover img { opacity: 1; transform: scale(1.05); }
+
+  .sheet-text { padding: clamp(24px, 3.4vw, 44px); display: flex; flex-direction: column; }
+  .sheet-text h3 { font-size: clamp(30px, 3.4vw, 46px); margin-bottom: 18px; }
+  .sheet-text .summary { color: var(--ink-dim); max-width: 36em; }
+  .specs { margin-top: 24px; border-top: 1px solid var(--ink); }
+  .specs div { display: grid; grid-template-columns: 8.5em 1fr; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--rule); font-size: 15px; }
+  .specs dt { font-weight: 700; }
+  .specs dd { color: var(--ink); }
+  .sheet .title-block { color: var(--ink); border-left: 0; border-right: 0; border-bottom: 0; }
+  .sheet .title-block .tb-k { opacity: .6; }
+  .highlight { background: linear-gradient(transparent 62%, rgba(255,194,51,.75) 62%); padding: 0 2px; color: var(--ink); }
+
+  /* ---------- REVISION TABLE ---------- */
+  .rev { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--ink); }
+  .rev th { text-align: left; font-size: 13px; font-weight: 600; color: var(--ink-dim); padding: 12px 18px; border-bottom: 1px solid var(--ink); background: var(--vellum); }
+  .rev td { padding: 18px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .rev tr:last-child td { border-bottom: 0; }
+  .rev td:first-child { white-space: nowrap; font-weight: 600; width: 1%; }
+  .rev .role { font-weight: 700; font-size: 18px; }
+  .rev .where { color: var(--ink-dim); font-size: 15px; }
+  .rev tr.next td { background: #FFF8E1; }
+  .tag-next { display: inline-block; margin-left: 8px; font-size: 12px; font-weight: 700; background: var(--marker); padding: 2px 8px; border-radius: 2px; vertical-align: 3px; }
+
+  /* ---------- BOM ---------- */
+  .bom-wrap { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+  .bom { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--ink); }
+  .bom th { text-align: left; font-size: 13px; font-weight: 600; color: var(--ink-dim); padding: 10px 14px; border-bottom: 1px solid var(--ink); background: var(--vellum); }
+  .bom td { padding: 12px 14px; border-bottom: 1px solid var(--rule); font-size: 15px; vertical-align: top; }
+  .bom td:first-child { color: var(--ink-dim); width: 1%; }
+  .bom td:nth-child(2) { font-weight: 700; }
+  .bom a { text-decoration-color: var(--marker); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .cert-btn { font: inherit; font-size: 12px; font-weight: 700; border: 1px solid var(--ink); background: transparent; padding: 2px 8px; margin-left: 6px; cursor: pointer; border-radius: 2px; }
+  .cert-btn:hover { background: var(--marker); border-color: var(--marker); }
+  .about { font-size: 18px; }
+  .about p + p { margin-top: 1em; }
+  .langs { margin-top: 28px; }
+  .langs > div:nth-child(-n+2) { border-bottom: 1px solid currentColor; }
+  .langs > div:nth-child(2n) { border-right: 0; }
+
+  /* ---------- CONTACT ---------- */
+  .contact { background: var(--prussian); color: var(--line); position: relative; overflow: hidden; }
+  .contact::before { content: ''; position: absolute; inset: 0; background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 24px 24px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 24px 24px; }
+  .contact .wrap { position: relative; }
+  .contact h2 { font-size: clamp(40px, 7vw, 96px); max-width: 12em; }
+  .contact .mail { display: inline-block; margin-top: 32px; font-size: clamp(22px, 3.4vw, 44px); font-variation-settings: 'wdth' 112; font-weight: 700; color: var(--marker); text-decoration: none; border-bottom: 2px solid transparent; }
+  .contact .mail:hover { border-bottom-color: var(--marker); }
+  .contact .title-block { color: var(--line-dim); margin-top: 56px; }
+  .contact .title-block .tb-v, .contact .title-block a { color: var(--line); }
+  footer { background: var(--prussian); color: var(--line-dim); font-size: 13px; padding: 20px var(--gutter); border-top: 1px solid rgba(230,238,248,.15); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+  /* ---------- LIGHTBOX ---------- */
+  .lb { position: fixed; inset: 0; z-index: 100; background: rgba(6, 20, 40, 0.97); display: none; grid-template-columns: minmax(0, 1fr) 320px; color: var(--line); }
+  .lb.open { display: grid; animation: fade .2s ease; }
+  .lb-stage { display: flex; align-items: center; justify-content: center; padding: 32px; min-height: 0; }
+  .lb-stage img, .lb-stage video { max-width: 100%; max-height: calc(100vh - 64px); object-fit: contain; }
+  .lb-side { background: var(--prussian); border-left: 1px solid rgba(230,238,248,.2); padding: 28px 22px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
+  .lb-title { font-weight: 700; font-size: 18px; }
+  .lb-count { color: var(--line-dim); font-size: 13px; }
+  .lb-ctrl { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .lb-thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .lb-thumbs button { border: 1px solid transparent; padding: 0; background: #000; cursor: pointer; aspect-ratio: 1; overflow: hidden; position: relative; }
+  .lb-thumbs button.on { border-color: var(--marker); }
+  .lb-thumbs img { width: 100%; height: 100%; object-fit: cover; opacity: .7; }
+  .lb-thumbs button.on img, .lb-thumbs button:hover img { opacity: 1; }
+  .lb-thumbs .play { position: absolute; inset: auto 4px 4px auto; background: var(--marker); color: var(--prussian); font-size: 10px; font-weight: 800; padding: 1px 5px; }
+
+  /* ---------- RESPONSIVE ---------- */
   @media (max-width: 900px) {
-    #competition-results { padding-left: 24px !important; padding-right: 24px !important; }
-    #competition-results .comp-grid { grid-template-columns: 1fr 1fr !important; }
-    #competition-results .comp-grid > div { grid-column: auto !important; grid-row: auto !important; }
-    #comp-lightbox > div { grid-template-columns: 1fr !important; }
+    .hero-inner { grid-template-columns: 1fr; padding-top: 96px; }
+    .arm-stage { max-width: 560px; margin: 0 auto; }
+    .sheet-body { grid-template-columns: 1fr; }
+    .sheet-media, .sheet.flip .sheet-media { order: 0; border-right: 0; border-left: 0; border-bottom: 1px solid var(--ink); }
+    .media-main { min-height: 0; aspect-ratio: 16 / 10; }
+    .bom-wrap { grid-template-columns: 1fr; }
+    .title-block { --cols: 2 !important; }
+    .title-block > div { border-bottom: 1px solid currentColor; }
+    .title-block > div:nth-child(2n) { border-right: 0; }
+    .lb { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) auto; }
+    .lb-side { border-left: 0; border-top: 1px solid rgba(230,238,248,.2); max-height: 42vh; }
+    .lb-stage img, .lb-stage video { max-height: 52vh; }
+    .lb-thumbs { grid-template-columns: repeat(6, 1fr); }
   }
-
+  @media (max-width: 560px) {
+    .nav-links a:not(.keep) { display: none; }
+    .sheet-frame { display: none; }
+    nav { padding: 18px var(--gutter); }
+    .specs div { grid-template-columns: 1fr; gap: 2px; }
+    .readout { min-width: 0; max-width: none; }
+    .rev td { padding: 14px 12px; }
+    .rev td:first-child { white-space: normal; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .draw { stroke-dashoffset: 0; }
+    .fade-in { opacity: 1; }
+    html { scroll-behavior: auto; }
+  }
 </style>
 </head>
 <body>
 
-<nav>
-  <a href="#home" class="nav-logo">MZ</a>
+<nav id="nav">
+  <a href="#top" class="brand">MZ</a>
   <div class="nav-links">
-    <a href="#projects">Projects</a>
-    <a href="#about">About</a>
+    <a href="#work" class="keep">Work</a>
     <a href="#experience">Experience</a>
-    <a href="#contact">Contact</a>
+    <a href="#toolkit">Toolkit</a>
+    <a href="#contact" class="keep">Contact</a>
   </div>
 </nav>
 
-<!-- HERO -->
-<section class="hero" id="home">
-  <div class="hero-grid-bg"></div>
-  <div class="hero-accent-circle"></div>
-  <div class="hero-accent-circle2"></div>
-
-  <div class="hero-label">Mechatronics Engineer · CAD & FEM Designer</div>
-  <h1>Munjalsinh<br><span>Zala</span></h1>
-  <p class="hero-sub">Mechatronics Engineering student at SRH University Berlin. Former Mechanical Design Lead of Team Skybound at CanSat 2026 (AIAA/AAS, NASA-sponsored), placing 14th of 36 international teams. Incoming Mechanical Hardware Design Intern at Quantum Systems from March 2027.</p>
-  <div class="hero-chips">
-    <div class="chip accent">SolidWorks Certified</div>
-    <div class="chip accent">AutoCAD Certified</div>
-    <div class="chip accent">Siemens SMSCP L1–2</div>
-    <div class="chip accent">ANSYS FEM</div>
-    <div class="chip">Fusion 360</div>
-    <div class="chip">FDM 3D Printing</div>
-    <div class="chip">GD&T</div>
-    <div class="chip">CFD</div>
-    <div class="chip">Python · MATLAB</div>
-    <div class="chip">ESP32 · Embedded C++</div>
-  </div>
-  <div class="hero-cta">
-    <a href="#projects" class="btn-primary">View Projects</a>
-    <a href="#contact" class="btn-ghost">Get in Touch</a>
-  </div>
-
-  <div class="hero-stats">
+<!-- ================= HERO ================= -->
+<header class="hero" id="top">
+  <svg class="sheet-frame" aria-hidden="true" preserveAspectRatio="none" id="frame"></svg>
+  <div class="hero-inner">
     <div>
-      <div class="hero-stat-val">1.9</div>
-      <div class="hero-stat-label">GPA · German Scale</div>
-    </div>
-    <div>
-      <div class="hero-stat-val">−400g</div>
-      <div class="hero-stat-label">Mass Saved · CanSat</div>
-    </div>
-    <div>
-      <div class="hero-stat-val">14<span style="font-size:0.5em">/36</span></div>
-      <div class="hero-stat-label">CanSat 2026 · Final Rank</div>
-    </div>
-  </div>
-</section>
-
-<!-- PROJECTS -->
-<section id="projects">
-  <div class="section-header">
-    <span class="section-num">01</span>
-    <h2>Projects</h2>
-    <div class="section-line"></div>
-  </div>
-
-  <div class="projects-grid">
-
-    <!-- Project 1: CanSat -->
-    <div class="project-card">
-      <div class="project-gallery">
-        <button class="gallery-open" type="button" data-gallery-open aria-label="Open CanSat image gallery">
-          <img class="project-img project-gallery-main" src="assets/images/cansat-01.jpg" alt="Detailed CanSat internal electronics and carbon-fiber structure CAD view">
-          <span class="gallery-badge">View 9 images</span>
-        </button>
+      <h1 class="display fade-in" style="--d:.1s"><span>Munjalsinh</span><span class="ln2">Zala</span></h1>
+      <p class="hero-lede fade-in" style="--d:.5s">Mechatronics engineering student at SRH University Berlin. I design hardware that has to survive real loads, from a CanSat payload built for a <strong>30G ejection</strong> to a <strong>wireless robot arm</strong> with layered safety. From March 2027 I'm a <strong>Mechanical Hardware Design Intern at Quantum Systems</strong>.</p>
+      <div class="actions fade-in" style="--d:.7s">
+        <a class="btn btn-marker" href="#work">See the projects</a>
+        <a class="btn btn-line" href="mailto:munjalzala@gmail.com">Email me</a>
       </div>
-      <div class="project-img-placeholder" style="display: none;">
-        <svg viewBox="0 0 200 112" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="80" y="10" width="40" height="90" rx="4" stroke="white" stroke-width="1"/>
-          <ellipse cx="100" cy="10" rx="20" ry="6" stroke="white" stroke-width="0.8"/>
-          <ellipse cx="100" cy="100" rx="20" ry="6" stroke="white" stroke-width="0.8"/>
-          <line x1="100" y1="10" x2="100" y2="100" stroke="white" stroke-width="0.3" stroke-dasharray="3 3"/>
-          <line x1="60" y1="56" x2="140" y2="56" stroke="white" stroke-width="0.3" stroke-dasharray="3 3"/>
-          <circle cx="100" cy="56" r="8" stroke="white" stroke-width="0.8"/>
-          <path d="M60 80 Q50 56 60 32" stroke="white" stroke-width="0.5" fill="none"/>
-          <path d="M140 80 Q150 56 140 32" stroke="white" stroke-width="0.5" fill="none"/>
-        </svg>
-        <span class="project-img-placeholder-label">Image Coming Soon</span>
-        <span class="upload-hint">Screenshot from SolidWorks</span>
-      </div>
-      <div class="project-tag">SolidWorks · ANSYS</div>
-      <div class="project-title">CanSat 2026 – Paraglider Payload System</div>
-      <ul class="project-bullets">
-        <li>Reduced system mass from 1400 g to 1000 g via structural optimisation and material selection</li>
-        <li>Designed release mechanism with 1.5× safety factor and &lt;1 s deployment time</li>
-        <li>Full FEM campaign: static structural, thermal, CFD pre-prototype; validated against 30G ejection shock</li>
-        <li>Paraglider descent control system for GPS-guided landing, steered by two MG90S servos on the brake lines</li>
-        <li>PPA-CF load-bearing structure, TPU 95A nose cone and egg containment shell</li>
-        <li>Nichrome burn-wire release: transistor-switched 7 V circuit cutting a 0.85 mm nylon retention line</li>
-      </ul>
-      <div class="project-meta">
-        <span>AIAA/AAS · NASA-Sponsored · 14th of 36 · 2026</span>
-        <span class="project-arrow">→</span>
+      <div class="title-block fade-in" style="--d:.9s; --cols:4">
+        <div><span class="tb-k">Drawn by</span><span class="tb-v">M. H. Zala</span></div>
+        <div><span class="tb-k">Based in</span><span class="tb-v">Berlin</span></div>
+        <div><span class="tb-k">GPA (German)</span><span class="tb-v">1.9</span></div>
+        <div><span class="tb-k">Next</span><span class="tb-v">Quantum Systems</span></div>
       </div>
     </div>
 
-    <!-- Project 2: Teach-by-Demonstration Robot Arm -->
-    <div class="project-card">
-      <div class="project-gallery">
-        <button class="gallery-open" type="button" data-arm-gallery-open aria-label="Open robot arm gallery">
-          <img loading="lazy" class="project-img project-gallery-main" src="assets/images/arm-live-test.jpg" alt="Teach-by-demonstration robot arm system with leader arm, follower arm and dashboard">
-          <span class="gallery-badge">View 11 items</span>
-        </button>
-      </div>
-      <div class="project-tag">ESP32 · ESP-NOW · C++ · three.js</div>
-      <div class="project-title">Teach-by-Demonstration Robot Arm</div>
-      <ul class="project-bullets">
-        <li>Wireless leader/follower arm: a hand-held 5-potentiometer leader drives a 6-joint follower live at 50 Hz over ESP-NOW between two ESP32s</li>
-        <li>Record and replay in two 60 s slots at 25 poses/s, stored in flash so motions survive power-off</li>
-        <li>Smooth motion via a trapezoidal velocity profile (150 °/s, 625 °/s²) and a 5-stage sensor pipeline: averaging, spike filter, EMA, dead zone, two-point calibration</li>
-        <li>Safety by design: three e-stops, a 15° synchronisation gate against start-up jumps, and a 0.6 s link watchdog</li>
-        <li>Browser HMI over Web Serial with a live three.js digital twin, plus offline MediaPipe hand-gesture control</li>
-      </ul>
-      <div class="project-meta">
-        <span>Embedded Systems Lab · SRH · Nov 2026 · Team of 2</span>
-        <span class="project-arrow">→</span>
-      </div>
-    </div>
-
-    <!-- Project 3: Internship work -->
-    <div class="project-card">
-      <div class="project-gallery">
-        <button class="gallery-open" type="button" data-jmcad-gallery-open aria-label="Open JMCAD image gallery">
-          <img loading="lazy" class="project-img project-gallery-main" src="assets/images/jmcad-v6-engine-drawing.png" alt="V6 engine technical drawing">
-          <span class="gallery-badge">View 6 items</span>
-        </button>
-      </div>
-      <div class="project-img-placeholder" style="display: none;">
-        <svg viewBox="0 0 200 112" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="20" y="20" width="70" height="70" stroke="white" stroke-width="0.8"/>
-          <rect x="30" y="30" width="50" height="50" stroke="white" stroke-width="0.4" stroke-dasharray="4 2"/>
-          <rect x="110" y="30" width="70" height="50" stroke="white" stroke-width="0.8"/>
-          <line x1="20" y1="20" x2="110" y2="30" stroke="white" stroke-width="0.5"/>
-          <line x1="90" y1="20" x2="180" y2="30" stroke="white" stroke-width="0.5"/>
-          <line x1="90" y1="90" x2="180" y2="80" stroke="white" stroke-width="0.5"/>
-          <line x1="20" y1="90" x2="110" y2="80" stroke="white" stroke-width="0.5"/>
-          <circle cx="145" cy="55" r="12" stroke="white" stroke-width="0.8"/>
-          <line x1="130" y1="55" x2="160" y2="55" stroke="white" stroke-width="0.3"/>
-          <line x1="145" y1="40" x2="145" y2="70" stroke="white" stroke-width="0.3"/>
-        </svg>
-        <span class="project-img-placeholder-label">Image Coming Soon</span>
-        <span class="upload-hint">Screenshot from SolidWorks / AutoCAD</span>
-      </div>
-      <div class="project-tag">SolidWorks · AutoCAD</div>
-      <div class="project-title">Client Component Design Support – JMCAD Internship</div>
-      <ul class="project-bullets">
-          <li>Supported engineers by designing and modifying mechanical components for client projects</li>
-          <li>Prepared CAD parts, assemblies, and drawing updates in SolidWorks and AutoCAD</li>
-        <li>Worked across machine concepts, mechanisms, sheet-metal parts, and technical drawings</li>
-      </ul>
-      <div class="project-meta">
-        <span>JMCAD Engineering Solutions · 2023</span>
-        <span class="project-arrow">→</span>
-      </div>
-    </div>
-
-    <!-- Project 4: ANSYS exhaust analysis -->
-    <div class="project-card">
-      <div class="project-gallery">
-        <button class="gallery-open" type="button" data-ansys-gallery-open aria-label="Open ANSYS exhaust analysis gallery">
-          <img loading="lazy" class="project-img project-gallery-main" src="assets/images/ansys-exhaust-temperature-contour.png" alt="ANSYS temperature contour of exhaust system">
-          <span class="gallery-badge">View 4 results</span>
-        </button>
-      </div>
-      <div class="project-tag">ANSYS · Thermal · CFD</div>
-      <div class="project-title">Thermal and CFD Analysis of an Exhaust System</div>
-      <ul class="project-bullets">
-        <li>Modelling and simulation class project analysing thermal and flow behaviour in an exhaust system</li>
-        <li>Reviewed temperature and pressure contour results across the full exhaust geometry</li>
-        <li>Evaluated local manifold temperature and deformation response from coupled-field simulation outputs</li>
-      </ul>
-      <div class="project-meta">
-        <span>Modelling & Simulation Class · ANSYS</span>
-        <span class="project-arrow">→</span>
-      </div>
-    </div>
-
-
-  </div>
-</section>
-
-
-<!-- COMPETITION RESULTS -->
-<section id="competition-results" style="padding: 80px 48px; border-bottom: 0.5px solid var(--line); background: var(--bg2);">
-  <div class="section-header">
-    <span class="section-num" style="font-size: 14px;">★</span>
-    <h2>CanSat 2026 – Competition Results</h2>
-    <div class="section-line"></div>
-  </div>
-
-  <div style="display: flex; align-items: flex-start; gap: 40px; flex-wrap: wrap; margin-bottom: 56px;">
-    <div style="border: 0.5px solid var(--accent2); background: var(--accent-dim); padding: 28px 40px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0;">
-      <span style="font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);">Final Placement</span>
-      <span style="font-family: var(--display); font-size: 56px; font-weight: 800; line-height: 1; color: var(--text); letter-spacing: -0.03em;">14<sup style="font-size: 26px; color: var(--accent2); vertical-align: super; letter-spacing: 0;">th</sup></span>
-      <span style="font-size: 11px; color: var(--muted); letter-spacing: 0.06em;">out of 36 international teams</span>
-    </div>
-    <div style="border: 0.5px solid var(--accent2); background: var(--accent-dim); padding: 28px 40px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0;">
-      <span style="font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);">Final Score</span>
-      <span style="font-family: var(--display); font-size: 56px; font-weight: 800; line-height: 1; color: var(--text); letter-spacing: -0.03em;">78.18<sup style="font-size: 22px; color: var(--accent2); vertical-align: super; letter-spacing: 0;">%</sup></span>
-      <span style="font-size: 11px; color: var(--muted); letter-spacing: 0.06em;">Team 1049 · Germany</span>
-    </div>
-    <div style="flex: 1; min-width: 260px; padding-top: 8px;">
-      <p style="font-size: 12px; color: var(--muted); line-height: 1.9;">Team Skybound (SRH Berlin) competed against 36 international teams at the 2026 CanSat Competition in Monterey, Virginia, placing <strong style="color: var(--text);">14th globally</strong> with a final score of 78.18%. Representing Germany as the only German university team, we placed ahead of teams from the US, Italy, Korea, Singapore, Colombia, and 20+ other nations — top 40% in a NASA/NRL-sponsored international competition.</p>
-    </div>
-  </div>
-
-  <div class="comp-grid" style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 8px; margin-bottom: 12px;">
-    <div style="grid-column: 1 / 8; grid-row: 1 / 3; position: relative; cursor: pointer; overflow: hidden;" class="comp-photo-wrap" data-comp-index="0">
-      <img src="assets/images/cansat-team-monterey.jpg" loading="lazy" alt="Team Skybound at CanSat 2026 in front of the American Astronautical Society backdrop, holding the CanSat hardware and German flag" style="width:100%; height:100%; min-height:260px; object-fit:cover; display:block; border: 0.5px solid var(--line);">
-      <div class="comp-photo-overlay"><span class="comp-photo-label">Team Skybound · AAS, Monterey Virginia</span></div>
-    </div>
-    <div style="grid-column: 8 / 13; grid-row: 1; position: relative; cursor: pointer; overflow: hidden;" class="comp-photo-wrap" data-comp-index="1">
-      <img src="assets/images/cansat-ground-station.jpg" loading="lazy" alt="Skybound ground station case open showing paraglider canopy, orange CanSat shell, and telemetry dashboard" style="width:100%; aspect-ratio:16/9; object-fit:cover; display:block; border: 0.5px solid var(--line);">
-      <div class="comp-photo-overlay"><span class="comp-photo-label">Ground Station · Pre-flight</span></div>
-    </div>
-    <div style="grid-column: 8 / 13; grid-row: 2; position: relative; cursor: pointer; overflow: hidden;" class="comp-photo-wrap" data-comp-index="2">
-      <img src="assets/images/cansat-field-ops.jpg" loading="lazy" alt="Field operations table with orange CanSat shell, ground station laptop, and avionics on launch day" style="width:100%; aspect-ratio:16/9; object-fit:cover; display:block; border: 0.5px solid var(--line);">
-      <div class="comp-photo-overlay"><span class="comp-photo-label">Field Ops · Launch Day</span></div>
-    </div>
-    <div style="grid-column: 1 / 7; grid-row: 3; position: relative; cursor: pointer; overflow: hidden;" class="comp-photo-wrap" data-comp-index="3">
-      <img src="assets/images/cansat-post-flight.jpg" loading="lazy" alt="Post-flight hardware: orange SRH CanSat container, exposed avionics frame, and deployed paraglider canopy" style="width:100%; aspect-ratio:16/9; object-fit:cover; display:block; border: 0.5px solid var(--line);">
-      <div class="comp-photo-overlay"><span class="comp-photo-label">Post-flight Hardware · After Recovery</span></div>
-    </div>
-    <div style="grid-column: 7 / 13; grid-row: 3; position: relative; cursor: pointer; overflow: hidden;" class="comp-photo-wrap" data-comp-index="4">
-      <img src="assets/images/cansat-scoresheet.jpg" loading="lazy" alt="Official CanSat 2026 final scoresheet showing Team 1049 Germany in 14th place with 78.18%" style="width:100%; aspect-ratio:16/9; object-fit:cover; object-position: center 18%; display:block; border: 0.5px solid var(--line);">
-      <div class="comp-photo-overlay"><span class="comp-photo-label">Official Scoresheet · Final Rankings</span></div>
-    </div>
-  </div>
-  <p style="font-size: 10px; color: rgba(136,136,128,0.5); letter-spacing: 0.06em; text-align: right; margin-top: 4px;">Click any photo to enlarge</p>
-</section>
-
-<!-- Competition lightbox -->
-<div id="comp-lightbox" style="display:none; position:fixed; inset:0; z-index:400; background:rgba(10,10,10,0.94); backdrop-filter:blur(14px); align-items:center; justify-content:center; padding:24px;" aria-hidden="true">
-  <div style="max-width:min(1100px,100%); width:100%; display:grid; grid-template-columns:minmax(0,1fr) 220px; gap:16px; max-height:calc(100vh - 48px);">
-    <div style="border:0.5px solid var(--line2); background:var(--bg2); display:flex; align-items:center; justify-content:center; min-height:0;">
-      <img id="comp-lb-img" src="" alt="" style="width:100%; max-height:calc(100vh - 120px); object-fit:contain; display:block;">
-    </div>
-    <div style="display:flex; flex-direction:column; gap:12px;">
-      <div id="comp-lb-caption" style="padding:14px; border:0.5px solid var(--line2); background:var(--bg3); color:var(--accent); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; line-height:1.6;"></div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-        <button class="gallery-btn" type="button" id="comp-lb-prev">Prev</button>
-        <button class="gallery-btn" type="button" id="comp-lb-next">Next</button>
-        <button class="gallery-btn" type="button" id="comp-lb-close" style="grid-column:1/-1;">Close</button>
-      </div>
-      <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px; overflow:auto;" id="comp-lb-thumbs"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ABOUT -->
-<section id="about">
-  <div class="section-header">
-    <span class="section-num">02</span>
-    <h2>About</h2>
-    <div class="section-line"></div>
-  </div>
-  <div class="about-layout">
-    <div class="about-text">
-      <p>I'm <strong>Munjalsinh Zala</strong>, a Mechatronics Engineering student at <strong>SRH University Berlin (GPA 1.9 German Scale)</strong>, with a hands-on focus on structural design, FEM simulation, and aerospace-grade testing.</p>
-      <p>As <strong>Mechanical Design Lead</strong> of Team Skybound at the <strong>CanSat Competition 2026</strong>, a NASA/NRL-sponsored rocket payload mission, I designed for real constraints: 30G ejection shock, tight mass budgets, and GPS-guided paraglider descent. We finished <strong>14th of 36</strong> international teams as the only German university team.</p>
-      <p>Beyond mechanical design, I build complete mechatronic systems: my <strong>teach-by-demonstration robot arm</strong> pairs two ESP32s over ESP-NOW with a filtered sensor pipeline, motion profiling, layered safety logic and a browser-based digital twin.</p>
-      <p>My certifications in <strong>SolidWorks and AutoCAD</strong> back up practical experience from an engineering internship and metalworking training at Handwerkskammer Potsdam. In March 2027 I join <strong>Quantum Systems</strong> as a <strong>Mechanical Hardware Design Intern</strong>, applying structural design and validation skills to sUAS / eVTOL development.</p>
-    </div>
-    <div class="skills-panel">
-      <div>
-        <div class="skills-group-label">CAD / Simulation</div>
-        <div class="skills-list">
-          <div class="skill-row">
-            <span class="skill-name">SolidWorks</span>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <button class="skill-badge" type="button" data-cert="solidworks" title="View SolidWorks certificate">Certified ↗</button>
-              <div class="skill-level">
-                <div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div>
-              </div>
-            </div>
-          </div>
-          <div class="skill-row">
-            <span class="skill-name">AutoCAD</span>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <button class="skill-badge" type="button" data-cert="autocad" title="View AutoCAD certificate">Certified ↗</button>
-              <div class="skill-level">
-                <div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot"></div>
-              </div>
-            </div>
-          </div>
-          <div class="skill-row">
-            <span class="skill-name">ANSYS (FEM/CFD)</span>
-            <div class="skill-level">
-              <div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot"></div>
-            </div>
-          </div>
-          <div class="skill-row">
-            <span class="skill-name">Fusion 360</span>
-            <div class="skill-level">
-              <div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot"></div><div class="skill-dot"></div>
-            </div>
-          </div>
-          <div class="skill-row">
-            <span class="skill-name">Autodesk Inventor</span>
-            <div class="skill-level">
-              <div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot"></div><div class="skill-dot"></div>
-            </div>
-          </div>
+    <div class="arm-stage" id="armStage">
+      <p class="arm-hint fade-in" style="--d:1.2s" id="armHint">Move your cursor over the sheet and the arm follows it. Record a path and replay it, like the <a href="#arm">real leader/follower arm</a> below.</p>
+      <svg id="armSvg" viewBox="0 0 600 552" role="img" aria-label="Interactive line drawing of a robot arm that follows the pointer"></svg>
+      <div class="readout fade-in" style="--d:1.2s" aria-live="off">
+        <div>Base joint θ₁</div><div id="ro1">0.0°</div>
+        <div>Elbow joint θ₂</div><div id="ro2">0.0°</div>
+        <div>Mode</div><div id="roMode">Follow</div>
+        <div class="ro-actions">
+          <button class="ro-btn rec" id="recBtn" type="button">Record path</button>
+          <button class="ro-btn" id="playBtn" type="button" disabled>Replay</button>
         </div>
       </div>
-      <div>
-        <div class="skills-group-label">Engineering & Fabrication</div>
-        <div class="skills-list">
-          <div class="skill-row">
-            <span class="skill-name">GD&T</span>
-            <div class="skill-level">
-              <div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot"></div>
-            </div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= WORK ================= -->
+<section id="work">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="display">Projects</h2>
+      <p>Hardware I've designed, simulated, built and tested. Open any image to see the full set of CAD, test and launch photos.</p>
+    </div>
+
+    <!-- CanSat -->
+    <article class="sheet" id="cansat">
+      <div class="sheet-body">
+        <div class="sheet-media">
+          <button class="media-main" type="button" data-open="cansat" data-index="0" aria-label="Open CanSat gallery">
+            <img src="assets/images/cansat-01.jpg" alt="CanSat internal electronics and carbon-fibre structure, CAD view">
+            <span class="media-count">14 images</span>
+          </button>
+          <div class="strip">
+            <button type="button" data-open="cansat" data-index="9" aria-label="Team Skybound in Monterey"><img loading="lazy" src="assets/images/cansat-team-monterey.jpg" alt=""></button>
+            <button type="button" data-open="cansat" data-index="10" aria-label="Ground station"><img loading="lazy" src="assets/images/cansat-ground-station.jpg" alt=""></button>
+            <button type="button" data-open="cansat" data-index="12" aria-label="Post-flight hardware"><img loading="lazy" src="assets/images/cansat-post-flight.jpg" alt=""></button>
+            <button type="button" data-open="cansat" data-index="6" aria-label="Technical drawing"><img loading="lazy" src="assets/images/cansat-07.jpg" alt=""></button>
           </div>
-          <div class="skill-row">
-            <span class="skill-name">FDM 3D Printing</span>
-            <div class="skill-level">
-              <div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot"></div>
-            </div>
+        </div>
+        <div class="sheet-text">
+          <h3 class="display">CanSat 2026 paraglider payload</h3>
+          <p class="summary">As mechanical lead for Team Skybound, I designed a rocket-deployed payload that survives a 30G ejection, steers a paraglider to a GPS target and releases its cargo at 2 m. We placed <span class="highlight">14th of 36 international teams</span>, the only German university team in the field.</p>
+          <dl class="specs">
+            <div><dt>Mass</dt><dd>Cut from 1,400 g to 1,000 g through structural optimisation and material choice</dd></div>
+            <div><dt>Structure</dt><dd>PPA-CF load-bearing frame; TPU 95A nose cone and egg containment shell</dd></div>
+            <div><dt>Release</dt><dd>Nichrome burn-wire, 7 V transistor-switched, cutting a 0.85 mm nylon line in under 1 s; 1.5× safety factor</dd></div>
+            <div><dt>Steering</dt><dd>Two MG90S servos pulling the paraglider brake lines</dd></div>
+            <div><dt>Validation</dt><dd>ANSYS static, thermal and CFD at 30G; vacuum, thermal, drop, vibration and load tests</dd></div>
+          </dl>
+        </div>
+      </div>
+      <div class="title-block" style="--cols:5">
+        <div><span class="tb-k">Role</span><span class="tb-v">Mechanical Design Lead</span></div>
+        <div><span class="tb-k">Event</span><span class="tb-v">CanSat, AIAA/AAS</span></div>
+        <div><span class="tb-k">Location</span><span class="tb-v">Monterey, Virginia</span></div>
+        <div><span class="tb-k">Tools</span><span class="tb-v">SolidWorks, ANSYS</span></div>
+        <div><span class="tb-k">Result</span><span class="tb-v">14th / 36, 78.18%</span></div>
+      </div>
+    </article>
+
+    <!-- Robot arm -->
+    <article class="sheet flip" id="arm">
+      <div class="sheet-body">
+        <div class="sheet-media">
+          <button class="media-main" type="button" data-open="arm" data-index="0" aria-label="Open robot arm gallery">
+            <video class="contain" id="armVideo" src="assets/images/arm-demo-mimic.mp4" poster="assets/images/arm-demo-mimic-poster.jpg" muted loop playsinline preload="none"></video>
+            <span class="media-count">2 videos, 9 images</span>
+          </button>
+          <div class="strip">
+            <button type="button" data-open="arm" data-index="1" aria-label="Second demo video"><img loading="lazy" src="assets/images/arm-demo-replay-poster.jpg" alt=""></button>
+            <button type="button" data-open="arm" data-index="2" aria-label="Complete setup"><img loading="lazy" src="assets/images/arm-setup-labelled.jpg" alt=""></button>
+            <button type="button" data-open="arm" data-index="9" aria-label="Dashboard"><img loading="lazy" src="assets/images/arm-dashboard.jpg" alt=""></button>
+            <button type="button" data-open="arm" data-index="7" aria-label="State machine"><img loading="lazy" src="assets/images/arm-state-machine.jpg" alt=""></button>
           </div>
-          <div class="skill-row">
-            <span class="skill-name">Python · MATLAB</span>
-            <div class="skill-level">
-              <div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot filled"></div><div class="skill-dot"></div><div class="skill-dot"></div>
-            </div>
+        </div>
+        <div class="sheet-text">
+          <h3 class="display">Teach-by-demonstration robot arm</h3>
+          <p class="summary">A hand-held leader arm with five potentiometers drives a six-joint follower over a direct radio link. You can record a motion and replay it, or steer the arm with hand gestures from a browser dashboard that shows a live 3D twin. <span class="highlight">Demonstrated live with every planned feature working.</span></p>
+          <dl class="specs">
+            <div><dt>Link</dt><dd>ESP-NOW between two ESP32s: commands at 50 Hz, status back at 20 Hz</dd></div>
+            <div><dt>Recording</dt><dd>Two 60 s slots at 25 poses per second, kept in flash through power-off</dd></div>
+            <div><dt>Motion</dt><dd>Trapezoidal velocity profile, 150 °/s and 625 °/s², driven through a PCA9685</dd></div>
+            <div><dt>Sensing</dt><dd>16-sample averaging, spike filter, EMA, dead zone and two-point calibration</dd></div>
+            <div><dt>Safety</dt><dd>Three e-stops, a 15° sync gate against start-up jumps, a 0.6 s link watchdog</dd></div>
+            <div><dt>Interface</dt><dd>Web Serial dashboard, three.js digital twin, offline MediaPipe gesture control</dd></div>
+          </dl>
+        </div>
+      </div>
+      <div class="title-block" style="--cols:5">
+        <div><span class="tb-k">Course</span><span class="tb-v">Embedded Systems Lab</span></div>
+        <div><span class="tb-k">Team</span><span class="tb-v">2, with A. Khaladkar</span></div>
+        <div><span class="tb-k">Date</span><span class="tb-v">November 2026</span></div>
+        <div><span class="tb-k">Tools</span><span class="tb-v">ESP32, C++, three.js</span></div>
+        <div><span class="tb-k">Status</span><span class="tb-v">Demonstrated live</span></div>
+      </div>
+    </article>
+
+    <!-- ANSYS -->
+    <article class="sheet" id="exhaust">
+      <div class="sheet-body">
+        <div class="sheet-media">
+          <button class="media-main" type="button" data-open="ansys" data-index="0" aria-label="Open exhaust analysis gallery">
+            <img loading="lazy" src="assets/images/ansys-exhaust-temperature-contour.png" alt="ANSYS temperature contour of an exhaust system">
+            <span class="media-count">4 results</span>
+          </button>
+          <div class="strip">
+            <button type="button" data-open="ansys" data-index="1" aria-label="Pressure contour"><img loading="lazy" src="assets/images/ansys-exhaust-pressure-contour.png" alt=""></button>
+            <button type="button" data-open="ansys" data-index="2" aria-label="Manifold temperature"><img loading="lazy" src="assets/images/ansys-exhaust-manifold-temperature.png" alt=""></button>
+            <button type="button" data-open="ansys" data-index="3" aria-label="Total deformation"><img loading="lazy" src="assets/images/ansys-exhaust-manifold-deformation.png" alt=""></button>
+            <button type="button" data-open="ansys" data-index="0" aria-label="Temperature contour"><img loading="lazy" src="assets/images/ansys-exhaust-temperature-contour.png" alt=""></button>
           </div>
+        </div>
+        <div class="sheet-text">
+          <h3 class="display">Exhaust system thermal and CFD analysis</h3>
+          <p class="summary">A modelling and simulation course project: a coupled thermal, flow and structural study of a complete exhaust system in ANSYS.</p>
+          <dl class="specs">
+            <div><dt>Flow</dt><dd>Temperature and pressure contours across the full exhaust geometry</dd></div>
+            <div><dt>Thermal</dt><dd>Local manifold temperature from the coupled-field results</dd></div>
+            <div><dt>Structural</dt><dd>Total deformation of the manifold under thermal load</dd></div>
+          </dl>
+        </div>
+      </div>
+      <div class="title-block" style="--cols:3">
+        <div><span class="tb-k">Course</span><span class="tb-v">Modelling &amp; Simulation</span></div>
+        <div><span class="tb-k">Tools</span><span class="tb-v">ANSYS</span></div>
+        <div><span class="tb-k">Analyses</span><span class="tb-v">Thermal, CFD, structural</span></div>
+      </div>
+    </article>
+
+    <!-- JMCAD -->
+    <article class="sheet flip" id="jmcad">
+      <div class="sheet-body">
+        <div class="sheet-media">
+          <button class="media-main" type="button" data-open="jmcad" data-index="0" aria-label="Open JMCAD gallery">
+            <img loading="lazy" src="assets/images/jmcad-v6-engine-drawing.png" alt="V6 engine technical drawing" style="object-fit:contain;background:#fff">
+            <span class="media-count">5 models, 1 video</span>
+          </button>
+          <div class="strip">
+            <button type="button" data-open="jmcad" data-index="5" aria-label="Complete engine animation"><img loading="lazy" src="assets/images/jmcad-complete-engine-poster.jpg" alt=""></button>
+            <button type="button" data-open="jmcad" data-index="1" aria-label="Drone docking station"><img loading="lazy" src="assets/images/jmcad-concept-drone-docking-station.png" alt=""></button>
+            <button type="button" data-open="jmcad" data-index="2" aria-label="Foil sealing machine"><img loading="lazy" src="assets/images/jmcad-foil-sealing-machine.png" alt=""></button>
+            <button type="button" data-open="jmcad" data-index="4" aria-label="Stapler sheet metal"><img loading="lazy" src="assets/images/jmcad-stapler-sheet-metal.png" alt=""></button>
+          </div>
+        </div>
+        <div class="sheet-text">
+          <h3 class="display">Client component design at JMCAD</h3>
+          <p class="summary">During my engineering internship I supported the design team on client projects, modelling and modifying parts and keeping drawings up to date.</p>
+          <dl class="specs">
+            <div><dt>Work</dt><dd>CAD parts, assemblies and drawing updates for client components</dd></div>
+            <div><dt>Range</dt><dd>Machine concepts, mechanisms, sheet-metal parts and full technical drawings</dd></div>
+            <div><dt>Models</dt><dd>V6 engine, drone docking station, foil sealing machine, shock absorber, stapler</dd></div>
+          </dl>
+        </div>
+      </div>
+      <div class="title-block" style="--cols:4">
+        <div><span class="tb-k">Role</span><span class="tb-v">Engineering Intern</span></div>
+        <div><span class="tb-k">Company</span><span class="tb-v">JMCAD, India</span></div>
+        <div><span class="tb-k">Date</span><span class="tb-v">Feb – May 2023</span></div>
+        <div><span class="tb-k">Tools</span><span class="tb-v">SolidWorks, AutoCAD</span></div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= EXPERIENCE ================= -->
+<section id="experience" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="display">Experience</h2>
+      <p>Most recent first, like the revision table on a drawing.</p>
+    </div>
+    <table class="rev">
+      <thead><tr><th>Date</th><th>Role and where</th></tr></thead>
+      <tbody>
+        <tr class="next"><td>From Mar 2027</td><td><div class="role">Mechanical Hardware Design Intern <span class="tag-next">Next</span></div><div class="where">Quantum Systems, Gilching</div></td></tr>
+        <tr><td>2026</td><td><div class="role">Mechanical Design Lead, Team Skybound</div><div class="where">CanSat Competition 2026 (AIAA/AAS, NASA-sponsored). Finished 14th of 36.</div></td></tr>
+        <tr><td>2024 – now</td><td><div class="role">B.Eng. Applied Mechatronic Systems Engineering</div><div class="where">SRH University Berlin, GPA 1.9. Mechanics, control systems, FEM, embedded systems.</div></td></tr>
+        <tr><td>2024</td><td><div class="role">Metalworking training</div><div class="where">Handwerkskammer Potsdam: machining, forming, joining</div></td></tr>
+        <tr><td>Feb – May 2023</td><td><div class="role">Engineering Intern, client component design</div><div class="where">JMCAD Engineering Solutions, India. SolidWorks and AutoCAD certified.</div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ================= TOOLKIT ================= -->
+<section id="toolkit" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="display">Toolkit</h2>
+      <p>Written as a bill of materials: each tool, and the project where you can see it in use.</p>
+    </div>
+    <div class="bom-wrap">
+      <table class="bom">
+        <thead><tr><th>Item</th><th>Tool</th><th>Used in</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>SolidWorks <button class="cert-btn" type="button" data-cert="solidworks">Certificate</button></td><td><a href="#cansat">CanSat</a>, <a href="#jmcad">JMCAD</a></td></tr>
+          <tr><td>2</td><td>AutoCAD <button class="cert-btn" type="button" data-cert="autocad">Certificate</button></td><td><a href="#jmcad">JMCAD drawings</a></td></tr>
+          <tr><td>3</td><td>ANSYS FEM and CFD</td><td><a href="#cansat">CanSat 30G analysis</a>, <a href="#exhaust">exhaust study</a></td></tr>
+          <tr><td>4</td><td>GD&amp;T and technical drawings</td><td><a href="#jmcad">JMCAD</a>, <a href="#cansat">CanSat drawing sheet</a></td></tr>
+          <tr><td>5</td><td>FDM printing (PPA-CF, TPU)</td><td><a href="#cansat">CanSat structure and shell</a></td></tr>
+          <tr><td>6</td><td>Machining, forming, joining</td><td>Handwerkskammer Potsdam</td></tr>
+          <tr><td>7</td><td>ESP32, C++, I²C, PWM</td><td><a href="#arm">Robot arm</a></td></tr>
+          <tr><td>8</td><td>Siemens SMSCP, levels 1–2</td><td>Certification</td></tr>
+          <tr><td>9</td><td>Fusion 360, Inventor, Python, MATLAB</td><td>Coursework</td></tr>
+        </tbody>
+      </table>
+      <div class="about">
+        <p>I like problems where the numbers are unforgiving: a mass budget, a shock load, a link that might drop mid-motion. I start in CAD and simulation, then prove it on the bench.</p>
+        <p>I've lived in India, the US and Germany, and I work comfortably across teams and languages.</p>
+        <div class="title-block langs" style="--cols:2">
+          <div><span class="tb-k">English</span><span class="tb-v">C1</span></div>
+          <div><span class="tb-k">German</span><span class="tb-v">A2</span></div>
+          <div><span class="tb-k">Hindi</span><span class="tb-v">Native</span></div>
+          <div><span class="tb-k">Gujarati</span><span class="tb-v">Native</span></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- EXPERIENCE -->
-<section id="experience">
-  <div class="section-header">
-    <span class="section-num">03</span>
-    <h2>Experience & Education</h2>
-    <div class="section-line"></div>
-  </div>
-  <div class="exp-list">
-    <div class="exp-item">
-      <div class="exp-meta">
-        <div class="exp-date">From March 2027</div>
-        <div class="exp-company">Quantum Systems<br>Gilching, Germany</div>
-      </div>
-      <div>
-        <div class="exp-role">Mechanical Hardware Design Intern (incoming)</div>
-        <ul class="exp-bullets">
-          <li>Mandatory internship / practical semester in mechanical hardware design for sUAS and eVTOL systems</li>
-        </ul>
-      </div>
-    </div>
-    <div class="exp-item">
-      <div class="exp-meta">
-        <div class="exp-date">2026 · Completed</div>
-        <div class="exp-company">AIAA/AAS · NASA-Sponsored<br>CanSat Competition 2026<br>Final rank: 14th of 36</div>
-      </div>
-      <div>
-        <div class="exp-role">Mechanical Design Lead – CanSat Competition</div>
-        <ul class="exp-bullets">
-          <li>Led mechanical design of a paraglider-guided rocket payload — survive 30G ejection, steer to GPS target, release payload at 2 m altitude</li>
-          <li>Reduced total system mass from 1400 g to 1000 g through structural optimisation and material selection</li>
-          <li>Designed release mechanism with 1.5× safety factor and &lt;1 s deployment time</li>
-          <li>Ran ANSYS FEM (static structural, thermal, CFD) and full physical test campaign: vacuum, thermal, drop, vibration, load testing</li>
-        </ul>
-      </div>
-    </div>
-    <div class="exp-item">
-      <div class="exp-meta">
-        <div class="exp-date">Feb – May 2023</div>
-        <div class="exp-company">JMCAD Engineering Solutions<br>India</div>
-      </div>
-      <div>
-        <div class="exp-role">Engineering Intern – Client Component Design</div>
-        <ul class="exp-bullets">
-          <li>Supported engineers by designing and modifying mechanical components for client projects</li>
-          <li>Prepared CAD parts, assemblies, and drawing updates in SolidWorks and AutoCAD</li>
-          <li>Worked across machine concepts, mechanisms, sheet-metal parts, and technical drawings</li>
-        </ul>
-      </div>
-    </div>
-    <div class="exp-item">
-      <div class="exp-meta">
-        <div class="exp-date">2024 – Present</div>
-        <div class="exp-company">SRH University Berlin<br>GPA: 1.9</div>
-      </div>
-      <div>
-        <div class="exp-role">B.Eng. Applied Mechatronic Systems Engineering</div>
-        <ul class="exp-bullets">
-          <li>Focus: mechanics, control systems, FEM, mechatronics</li>
-          <li>SolidWorks & AutoCAD Certified (JMCAD, 2023)</li>
-          <li>Siemens SMSCP Levels 1–2</li>
-          <li>Metalworking Training – Handwerkskammer Potsdam (2024)</li>
-          <li>Languages: English C1 · German A2 · Hindi & Gujarati Native</li>
-        </ul>
-      </div>
+<!-- ================= CONTACT ================= -->
+<section class="contact" id="contact">
+  <div class="wrap">
+    <h2 class="display">Building something that flies, drives or grips?</h2>
+    <a class="mail" href="mailto:munjalzala@gmail.com">munjalzala@gmail.com</a>
+    <div class="title-block" style="--cols:4">
+      <div><span class="tb-k">LinkedIn</span><a class="tb-v" href="https://linkedin.com/in/munjalsinh-zala" target="_blank" rel="noopener">munjalsinh-zala</a></div>
+      <div><span class="tb-k">GitHub</span><a class="tb-v" href="https://github.com/MunjalZala" target="_blank" rel="noopener">MunjalZala</a></div>
+      <div><span class="tb-k">Phone</span><a class="tb-v" href="tel:+4917668441048">+49 176 6844 1048</a></div>
+      <div><span class="tb-k">Location</span><span class="tb-v">Berlin, Germany</span></div>
     </div>
   </div>
 </section>
-
-<!-- CONTACT -->
-<section id="contact">
-  <div class="section-header">
-    <span class="section-num">04</span>
-    <h2>Contact</h2>
-    <div class="section-line"></div>
-  </div>
-  <div class="contact-layout">
-    <div class="contact-info">
-      <div class="contact-item">
-        <div class="contact-icon">@</div>
-        <div>
-          <div class="contact-item-label">Email</div>
-          <div class="contact-item-val"><a href="mailto:munjalzala@gmail.com">munjalzala@gmail.com</a></div>
-        </div>
-      </div>
-      <div class="contact-item">
-        <div class="contact-icon">in</div>
-        <div>
-          <div class="contact-item-label">LinkedIn</div>
-          <div class="contact-item-val"><a href="https://linkedin.com/in/munjalsinh-zala" target="_blank">linkedin.com/in/munjalsinh-zala</a></div>
-        </div>
-      </div>
-      <div class="contact-item">
-        <div class="contact-icon">gh</div>
-        <div>
-          <div class="contact-item-label">GitHub</div>
-          <div class="contact-item-val"><a href="https://github.com/MunjalZala" target="_blank" rel="noopener">github.com/MunjalZala</a></div>
-        </div>
-      </div>
-      <div class="contact-item">
-        <div class="contact-icon">☎</div>
-        <div>
-          <div class="contact-item-label">Phone</div>
-          <div class="contact-item-val">+49 176 6844 1048</div>
-        </div>
-      </div>
-      <div class="contact-item">
-        <div class="contact-icon">◎</div>
-        <div>
-          <div class="contact-item-label">Location</div>
-          <div class="contact-item-val">Berlin, Germany</div>
-        </div>
-      </div>
-    </div>
-    <div class="contact-cta">
-      <h3>Let's connect</h3>
-      <p>I'm joining Quantum Systems as a Mechanical Hardware Design Intern in March 2027. For project collaborations or engineering conversations around sUAS, eVTOL, and robotics hardware, feel free to reach out.</p>
-    </div>
-  </div>
-</section>
-
 <footer>
   <span>© <span id="year">2026</span> Munjalsinh Zala</span>
-  <span>Mechatronics Engineer · Berlin</span>
+  <span>Sheet 1 of 1, drawn in Berlin</span>
 </footer>
 
-<div class="gallery-modal" id="cansat-gallery" aria-hidden="true">
-  <div class="gallery-panel" role="dialog" aria-modal="true" aria-label="CanSat image gallery">
-    <div class="gallery-stage">
-      <img id="gallery-stage-img" src="assets/images/cansat-01.jpg" alt="Detailed CanSat internal electronics and carbon-fiber structure CAD view">
+<!-- ================= LIGHTBOX ================= -->
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <div class="lb-stage" id="lbStage"></div>
+  <div class="lb-side">
+    <div><div class="lb-title" id="lbTitle"></div><div class="lb-count" id="lbCount"></div></div>
+    <div class="lb-ctrl">
+      <button class="ro-btn" type="button" id="lbPrev">Previous</button>
+      <button class="ro-btn" type="button" id="lbNext">Next</button>
+      <button class="ro-btn" type="button" id="lbClose">Close</button>
     </div>
-    <div class="gallery-side">
-      <div class="gallery-actions">
-        <button class="gallery-btn" type="button" data-gallery-prev>Prev</button>
-        <button class="gallery-btn" type="button" data-gallery-next>Next</button>
-        <button class="gallery-btn gallery-close" type="button" data-gallery-close>Close</button>
-      </div>
-      <div class="gallery-thumbs" aria-label="Choose CanSat image">
-        <button class="gallery-thumb-btn is-active" type="button" data-gallery-index="0"><img src="assets/images/cansat-01.jpg" alt="Detailed CanSat internal electronics and carbon-fiber structure CAD view"></button>
-        <button class="gallery-thumb-btn" type="button" data-gallery-index="1"><img loading="lazy" src="assets/images/cansat-02.jpg" alt="CanSat payload inside transparent shell CAD view"></button>
-        <button class="gallery-thumb-btn" type="button" data-gallery-index="2"><img loading="lazy" src="assets/images/cansat-03.jpg" alt="CanSat internal structure angled CAD view"></button>
-        <button class="gallery-thumb-btn" type="button" data-gallery-index="3"><img loading="lazy" src="assets/images/cansat-04.jpg" alt="CanSat separated upper frame and lower shell CAD view"></button>
-        <button class="gallery-thumb-btn" type="button" data-gallery-index="4"><img loading="lazy" src="assets/images/cansat-05.jpg" alt="CanSat lower shell and honeycomb structure CAD view"></button>
-        <button class="gallery-thumb-btn" type="button" data-gallery-index="5"><img loading="lazy" src="assets/images/cansat-06.jpg" alt="CanSat front section CAD view with electronics and shell"></button>
-        <button class="gallery-thumb-btn" type="button" data-gallery-index="6"><img loading="lazy" src="assets/images/cansat-07.jpg" alt="CanSat technical drawing sheet with dimensions and assembly view"></button>
-        <button class="gallery-thumb-btn" type="button" data-gallery-index="7"><img loading="lazy" src="assets/images/cansat-08.jpg" alt="CanSat carbon-fiber frame and electronics close-up CAD view"></button>
-        <button class="gallery-thumb-btn" type="button" data-gallery-index="8"><img loading="lazy" src="assets/images/cansat-09.jpg" alt="CanSat full parachute payload deployment CAD view"></button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="gallery-modal" id="jmcad-gallery" aria-hidden="true">
-  <div class="gallery-panel" role="dialog" aria-modal="true" aria-label="JMCAD internship design gallery">
-    <div class="gallery-stage" id="jmcad-gallery-stage">
-      <img loading="lazy" src="assets/images/jmcad-v6-engine-drawing.png" alt="V6 engine technical drawing">
-    </div>
-    <div class="gallery-side">
-      <div class="gallery-title" id="jmcad-gallery-title">V6 Engine Drawing</div>
-      <div class="gallery-note">These are designs I made while learning SolidWorks at JMCAD and supporting client component design work during my internship.</div>
-      <div class="gallery-actions">
-        <button class="gallery-btn" type="button" data-jmcad-gallery-prev>Prev</button>
-        <button class="gallery-btn" type="button" data-jmcad-gallery-next>Next</button>
-        <button class="gallery-btn gallery-close" type="button" data-jmcad-gallery-close>Close</button>
-      </div>
-      <div class="gallery-thumbs" aria-label="Choose JMCAD design">
-        <button class="gallery-thumb-btn is-active" type="button" data-jmcad-gallery-index="0"><img loading="lazy" src="assets/images/jmcad-v6-engine-drawing.png" alt="V6 engine technical drawing"><span class="gallery-thumb-label">V6 Engine Drawing</span></button>
-        <button class="gallery-thumb-btn" type="button" data-jmcad-gallery-index="1"><img loading="lazy" src="assets/images/jmcad-concept-drone-docking-station.png" alt="Concept drone docking station CAD model"><span class="gallery-thumb-label">Concept Drone Docking Station</span></button>
-        <button class="gallery-thumb-btn" type="button" data-jmcad-gallery-index="2"><img loading="lazy" src="assets/images/jmcad-foil-sealing-machine.png" alt="Foil sealing machine CAD model"><span class="gallery-thumb-label">Foil Sealing Machine</span></button>
-        <button class="gallery-thumb-btn" type="button" data-jmcad-gallery-index="3"><img loading="lazy" src="assets/images/jmcad-shock-absorber.png" alt="Shock absorber CAD model"><span class="gallery-thumb-label">Shock Absorber</span></button>
-        <button class="gallery-thumb-btn" type="button" data-jmcad-gallery-index="4"><img loading="lazy" src="assets/images/jmcad-stapler-sheet-metal.png" alt="Stapler sheet metal CAD part"><span class="gallery-thumb-label">Stapler Sheet Metal</span></button>
-        <button class="gallery-thumb-btn" type="button" data-jmcad-gallery-index="5"><img loading="lazy" src="assets/images/jmcad-complete-engine-poster.jpg" alt="Complete engine CAD animation preview"><span class="gallery-thumb-label">Complete Engine</span></button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="gallery-modal" id="ansys-gallery" aria-hidden="true">
-  <div class="gallery-panel" role="dialog" aria-modal="true" aria-label="ANSYS exhaust analysis gallery">
-    <div class="gallery-stage" id="ansys-gallery-stage">
-      <img loading="lazy" src="assets/images/ansys-exhaust-temperature-contour.png" alt="ANSYS temperature contour of exhaust system">
-    </div>
-    <div class="gallery-side">
-      <div class="gallery-title" id="ansys-gallery-title">Temperature Contour</div>
-      <div class="gallery-note">Thermal and CFD analysis results from a modelling and simulation class project on an exhaust system.</div>
-      <div class="gallery-actions">
-        <button class="gallery-btn" type="button" data-ansys-gallery-prev>Prev</button>
-        <button class="gallery-btn" type="button" data-ansys-gallery-next>Next</button>
-        <button class="gallery-btn gallery-close" type="button" data-ansys-gallery-close>Close</button>
-      </div>
-      <div class="gallery-thumbs" aria-label="Choose ANSYS result">
-        <button class="gallery-thumb-btn is-active" type="button" data-ansys-gallery-index="0"><img loading="lazy" src="assets/images/ansys-exhaust-temperature-contour.png" alt="ANSYS temperature contour of exhaust system"><span class="gallery-thumb-label">Temperature Contour</span></button>
-        <button class="gallery-thumb-btn" type="button" data-ansys-gallery-index="1"><img loading="lazy" src="assets/images/ansys-exhaust-pressure-contour.png" alt="ANSYS pressure contour of exhaust system"><span class="gallery-thumb-label">Pressure Contour</span></button>
-        <button class="gallery-thumb-btn" type="button" data-ansys-gallery-index="2"><img loading="lazy" src="assets/images/ansys-exhaust-manifold-temperature.png" alt="ANSYS manifold temperature result"><span class="gallery-thumb-label">Manifold Temperature</span></button>
-        <button class="gallery-thumb-btn" type="button" data-ansys-gallery-index="3"><img loading="lazy" src="assets/images/ansys-exhaust-manifold-deformation.png" alt="ANSYS manifold total deformation result"><span class="gallery-thumb-label">Total Deformation</span></button>
-      </div>
-    </div>
+    <div class="lb-thumbs" id="lbThumbs"></div>
   </div>
 </div>
 
 <script>
-  const galleryImages = [
-    ['assets/images/cansat-01.jpg', 'Detailed CanSat internal electronics and carbon-fiber structure CAD view'],
-    ['assets/images/cansat-02.jpg', 'CanSat payload inside transparent shell CAD view'],
-    ['assets/images/cansat-03.jpg', 'CanSat internal structure angled CAD view'],
-    ['assets/images/cansat-04.jpg', 'CanSat separated upper frame and lower shell CAD view'],
-    ['assets/images/cansat-05.jpg', 'CanSat lower shell and honeycomb structure CAD view'],
-    ['assets/images/cansat-06.jpg', 'CanSat front section CAD view with electronics and shell'],
-    ['assets/images/cansat-07.jpg', 'CanSat technical drawing sheet with dimensions and assembly view'],
-    ['assets/images/cansat-08.jpg', 'CanSat carbon-fiber frame and electronics close-up CAD view'],
-    ['assets/images/cansat-09.jpg', 'CanSat full parachute payload deployment CAD view']
-  ];
-
-  const galleryModal = document.getElementById('cansat-gallery');
-  const galleryStageImg = document.getElementById('gallery-stage-img');
-  const galleryThumbs = [...document.querySelectorAll('[data-gallery-index]')];
-  let activeGalleryIndex = 0;
-
-  function setGalleryImage(index) {
-    activeGalleryIndex = (index + galleryImages.length) % galleryImages.length;
-    const [src, alt] = galleryImages[activeGalleryIndex];
-    galleryStageImg.src = src;
-    galleryStageImg.alt = alt;
-    galleryThumbs.forEach((thumb, thumbIndex) => {
-      thumb.classList.toggle('is-active', thumbIndex === activeGalleryIndex);
-    });
+/* ---------- gallery data ---------- */
+const I = 'assets/images/';
+const galleries = {
+  cansat: [
+    ['cansat-01.jpg','Internal electronics and carbon-fibre structure'],
+    ['cansat-02.jpg','Payload inside the transparent shell'],
+    ['cansat-03.jpg','Internal structure, angled view'],
+    ['cansat-04.jpg','Upper frame separated from the lower shell'],
+    ['cansat-05.jpg','Lower shell and honeycomb structure'],
+    ['cansat-06.jpg','Front section with electronics and shell'],
+    ['cansat-07.jpg','Technical drawing sheet with dimensions'],
+    ['cansat-08.jpg','Carbon-fibre frame and electronics close-up'],
+    ['cansat-09.jpg','Full paraglider payload deployment'],
+    ['cansat-team-monterey.jpg','Team Skybound at the competition in Monterey, Virginia'],
+    ['cansat-ground-station.jpg','Ground station before flight'],
+    ['cansat-field-ops.jpg','Field operations on launch day'],
+    ['cansat-post-flight.jpg','Hardware after recovery'],
+    ['cansat-scoresheet.jpg','Official final rankings: Team 1049, 14th place, 78.18%']
+  ],
+  arm: [
+    ['arm-demo-mimic.mp4','Demo: the follower copies the leader arm live','video'],
+    ['arm-demo-replay.mp4','Demo: the arm moving hands-free','video'],
+    ['arm-setup-labelled.jpg','The complete system, labelled'],
+    ['arm-live-test.jpg','Live mimic test'],
+    ['arm-leader-in-hand.jpg','Leader arm in hand'],
+    ['arm-follower-pose.jpg','Follower arm with the dashboard twin'],
+    ['arm-block-diagram.jpg','System block diagram'],
+    ['arm-state-machine.jpg','Leader state machine'],
+    ['arm-signal-pipeline.jpg','Potentiometer signal pipeline'],
+    ['arm-dashboard.jpg','Dashboard with the 3D digital twin'],
+    ['arm-leader-electronics.jpg','Leader box electronics']
+  ],
+  ansys: [
+    ['ansys-exhaust-temperature-contour.png','Temperature contour'],
+    ['ansys-exhaust-pressure-contour.png','Pressure contour'],
+    ['ansys-exhaust-manifold-temperature.png','Manifold temperature'],
+    ['ansys-exhaust-manifold-deformation.png','Total deformation']
+  ],
+  jmcad: [
+    ['jmcad-v6-engine-drawing.png','V6 engine drawing'],
+    ['jmcad-concept-drone-docking-station.png','Concept drone docking station'],
+    ['jmcad-foil-sealing-machine.png','Foil sealing machine'],
+    ['jmcad-shock-absorber.png','Shock absorber'],
+    ['jmcad-stapler-sheet-metal.png','Stapler, sheet metal'],
+    ['jmcad-complete-engine.mp4','Complete engine animation','video']
+  ],
+  cert: {
+    solidworks: ['Solidworks-Certificate.jpg','SolidWorks certificate of completion'],
+    autocad: ['Autocad-Certificate.jpg','AutoCAD certificate of completion']
   }
+};
+const poster = f => f.replace('.mp4', '-poster.jpg');
 
-  function openGallery() {
-    galleryModal.classList.add('is-open');
-    galleryModal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    setGalleryImage(0);
-    document.querySelector('[data-gallery-close]').focus();
-  }
-
-  function closeGallery() {
-    galleryModal.classList.remove('is-open');
-    galleryModal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-    document.querySelector('[data-gallery-open]').focus();
-  }
-
-  document.querySelector('[data-gallery-open]').addEventListener('click', openGallery);
-  document.querySelector('[data-gallery-close]').addEventListener('click', closeGallery);
-  document.querySelector('[data-gallery-prev]').addEventListener('click', () => setGalleryImage(activeGalleryIndex - 1));
-  document.querySelector('[data-gallery-next]').addEventListener('click', () => setGalleryImage(activeGalleryIndex + 1));
-  galleryThumbs.forEach((thumb) => {
-    thumb.addEventListener('click', () => setGalleryImage(Number(thumb.dataset.galleryIndex)));
+/* ---------- lightbox ---------- */
+const lb = document.getElementById('lb'), lbStage = document.getElementById('lbStage'),
+      lbTitle = document.getElementById('lbTitle'), lbCount = document.getElementById('lbCount'),
+      lbThumbs = document.getElementById('lbThumbs');
+let lbItems = [], lbIdx = 0, lbReturn = null;
+function lbShow(i) {
+  lbIdx = (i + lbItems.length) % lbItems.length;
+  const [f, name, kind] = lbItems[lbIdx];
+  lbStage.innerHTML = '';
+  let el;
+  if (kind === 'video') {
+    el = document.createElement('video');
+    Object.assign(el, { src: I + f, poster: I + poster(f), controls: true, muted: true, loop: true, playsInline: true, autoplay: true });
+  } else { el = document.createElement('img'); el.src = I + f; el.alt = name; }
+  lbStage.appendChild(el);
+  lbTitle.textContent = name;
+  lbCount.textContent = lbItems.length > 1 ? `${lbIdx + 1} of ${lbItems.length}` : '';
+  [...lbThumbs.children].forEach((b, k) => b.classList.toggle('on', k === lbIdx));
+}
+function lbOpen(items, i, from) {
+  lbItems = items; lbReturn = from;
+  lbThumbs.innerHTML = '';
+  items.forEach(([f, name, kind], k) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.setAttribute('aria-label', name);
+    b.innerHTML = `<img loading="lazy" src="${I + (kind === 'video' ? poster(f) : f)}" alt="">` + (kind === 'video' ? '<span class="play">Video</span>' : '');
+    b.onclick = () => lbShow(k);
+    lbThumbs.appendChild(b);
   });
-  galleryModal.addEventListener('click', (event) => {
-    if (event.target === galleryModal) closeGallery();
-  });
-  document.addEventListener('keydown', (event) => {
-    if (!galleryModal.classList.contains('is-open')) return;
-    if (event.key === 'Escape') closeGallery();
-    if (event.key === 'ArrowLeft') setGalleryImage(activeGalleryIndex - 1);
-    if (event.key === 'ArrowRight') setGalleryImage(activeGalleryIndex + 1);
-  });
+  document.getElementById('lbPrev').hidden = document.getElementById('lbNext').hidden = items.length < 2;
+  lb.classList.add('open'); document.body.style.overflow = 'hidden';
+  lbShow(i); document.getElementById('lbClose').focus();
+}
+function lbClose() {
+  lb.classList.remove('open'); lbStage.innerHTML = ''; document.body.style.overflow = '';
+  if (lbReturn) lbReturn.focus();
+}
+document.querySelectorAll('[data-open]').forEach(b => b.addEventListener('click', () => lbOpen(galleries[b.dataset.open], +b.dataset.index, b)));
+document.querySelectorAll('[data-cert]').forEach(b => b.addEventListener('click', () => lbOpen([galleries.cert[b.dataset.cert]], 0, b)));
+document.getElementById('lbPrev').onclick = () => lbShow(lbIdx - 1);
+document.getElementById('lbNext').onclick = () => lbShow(lbIdx + 1);
+document.getElementById('lbClose').onclick = lbClose;
+lb.addEventListener('click', e => { if (e.target === lb || e.target === lbStage) lbClose(); });
+document.addEventListener('keydown', e => {
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'Escape') lbClose();
+  if (e.key === 'ArrowLeft') lbShow(lbIdx - 1);
+  if (e.key === 'ArrowRight') lbShow(lbIdx + 1);
+});
 
-  const jmcadGalleryItems = [
-    { type: 'image', src: 'assets/images/jmcad-v6-engine-drawing.png', alt: 'V6 engine technical drawing', name: 'V6 Engine Drawing' },
-    { type: 'image', src: 'assets/images/jmcad-concept-drone-docking-station.png', alt: 'Concept drone docking station CAD model', name: 'Concept Drone Docking Station' },
-    { type: 'image', src: 'assets/images/jmcad-foil-sealing-machine.png', alt: 'Foil sealing machine CAD model', name: 'Foil Sealing Machine' },
-    { type: 'image', src: 'assets/images/jmcad-shock-absorber.png', alt: 'Shock absorber CAD model', name: 'Shock Absorber' },
-    { type: 'image', src: 'assets/images/jmcad-stapler-sheet-metal.png', alt: 'Stapler sheet metal CAD part', name: 'Stapler Sheet Metal' },
-    { type: 'video', src: 'assets/images/jmcad-complete-engine.mp4', alt: 'Complete engine CAD animation', name: 'Complete Engine' }
-  ];
+/* ---------- nav + misc ---------- */
+const nav = document.getElementById('nav');
+const onScroll = () => nav.classList.toggle('solid', scrollY > innerHeight * 0.85);
+addEventListener('scroll', onScroll, { passive: true }); onScroll();
+document.getElementById('year').textContent = new Date().getFullYear();
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (matchMedia('(pointer: coarse)').matches) {
+  document.getElementById('armHint').innerHTML = 'Drag across the drawing and the arm follows your finger. Record a path and replay it, like the <a href="#arm">real leader/follower arm</a> below.';
+}
 
-  const jmcadGalleryModal = document.getElementById('jmcad-gallery');
-  const jmcadGalleryStage = document.getElementById('jmcad-gallery-stage');
-  const jmcadGalleryTitle = document.getElementById('jmcad-gallery-title');
-  const jmcadGalleryThumbs = [...document.querySelectorAll('[data-jmcad-gallery-index]')];
-  let activeJmcadGalleryIndex = 0;
+/* play the arm demo only while it is on screen */
+const armVideo = document.getElementById('armVideo');
+new IntersectionObserver(([en]) => {
+  if (en.isIntersecting && !reduce) { armVideo.preload = 'auto'; armVideo.play().catch(() => {}); }
+  else armVideo.pause();
+}, { threshold: 0.4 }).observe(armVideo);
 
-  function setJmcadGalleryItem(index) {
-    activeJmcadGalleryIndex = (index + jmcadGalleryItems.length) % jmcadGalleryItems.length;
-    const item = jmcadGalleryItems[activeJmcadGalleryIndex];
-    jmcadGalleryStage.innerHTML = '';
-    jmcadGalleryTitle.textContent = item.name;
-
-    if (item.type === 'video') {
-      const video = document.createElement('video');
-      video.src = item.src;
-      video.controls = true;
-      video.muted = true;
-      video.loop = true;
-      video.playsInline = true;
-      video.setAttribute('aria-label', item.alt);
-      jmcadGalleryStage.appendChild(video);
-    } else {
-      const image = document.createElement('img');
-      image.src = item.src;
-      image.alt = item.alt;
-      jmcadGalleryStage.appendChild(image);
+/* ---------- sheet frame with zone markers ---------- */
+(function frame() {
+  const svg = document.getElementById('frame');
+  const draw = () => {
+    const w = svg.clientWidth, h = svg.clientHeight;
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    let s = `<rect x="0.5" y="0.5" width="${w - 1}" height="${h - 1}"/><rect x="18.5" y="18.5" width="${w - 37}" height="${h - 37}"/>`;
+    const cols = 8, rows = 4;
+    for (let i = 0; i < cols; i++) {
+      const x = 18 + (w - 36) * (i + 0.5) / cols;
+      s += `<text x="${x}" y="13" text-anchor="middle">${i + 1}</text><text x="${x}" y="${h - 5}" text-anchor="middle">${i + 1}</text>`;
+      if (i) { const xl = 18 + (w - 36) * i / cols; s += `<line x1="${xl}" y1="0" x2="${xl}" y2="18" stroke="rgba(230,238,248,.45)"/><line x1="${xl}" y1="${h - 18}" x2="${xl}" y2="${h}" stroke="rgba(230,238,248,.45)"/>`; }
     }
-
-    jmcadGalleryThumbs.forEach((thumb, thumbIndex) => {
-      thumb.classList.toggle('is-active', thumbIndex === activeJmcadGalleryIndex);
-    });
-  }
-
-  function openJmcadGallery() {
-    jmcadGalleryModal.classList.add('is-open');
-    jmcadGalleryModal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    setJmcadGalleryItem(0);
-    document.querySelector('[data-jmcad-gallery-close]').focus();
-  }
-
-  function closeJmcadGallery() {
-    jmcadGalleryModal.classList.remove('is-open');
-    jmcadGalleryModal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-    document.querySelector('[data-jmcad-gallery-open]').focus();
-  }
-
-  document.querySelector('[data-jmcad-gallery-open]').addEventListener('click', openJmcadGallery);
-  document.querySelector('[data-jmcad-gallery-close]').addEventListener('click', closeJmcadGallery);
-  document.querySelector('[data-jmcad-gallery-prev]').addEventListener('click', () => setJmcadGalleryItem(activeJmcadGalleryIndex - 1));
-  document.querySelector('[data-jmcad-gallery-next]').addEventListener('click', () => setJmcadGalleryItem(activeJmcadGalleryIndex + 1));
-  jmcadGalleryThumbs.forEach((thumb) => {
-    thumb.addEventListener('click', () => setJmcadGalleryItem(Number(thumb.dataset.jmcadGalleryIndex)));
-  });
-  jmcadGalleryModal.addEventListener('click', (event) => {
-    if (event.target === jmcadGalleryModal) closeJmcadGallery();
-  });
-  document.addEventListener('keydown', (event) => {
-    if (!jmcadGalleryModal.classList.contains('is-open')) return;
-    if (event.key === 'Escape') closeJmcadGallery();
-    if (event.key === 'ArrowLeft') setJmcadGalleryItem(activeJmcadGalleryIndex - 1);
-    if (event.key === 'ArrowRight') setJmcadGalleryItem(activeJmcadGalleryIndex + 1);
-  });
-
-  const ansysGalleryItems = [
-    { src: 'assets/images/ansys-exhaust-temperature-contour.png', alt: 'ANSYS temperature contour of exhaust system', name: 'Temperature Contour' },
-    { src: 'assets/images/ansys-exhaust-pressure-contour.png', alt: 'ANSYS pressure contour of exhaust system', name: 'Pressure Contour' },
-    { src: 'assets/images/ansys-exhaust-manifold-temperature.png', alt: 'ANSYS manifold temperature result', name: 'Manifold Temperature' },
-    { src: 'assets/images/ansys-exhaust-manifold-deformation.png', alt: 'ANSYS manifold total deformation result', name: 'Total Deformation' }
-  ];
-
-  const ansysGalleryModal = document.getElementById('ansys-gallery');
-  const ansysGalleryStage = document.getElementById('ansys-gallery-stage');
-  const ansysGalleryTitle = document.getElementById('ansys-gallery-title');
-  const ansysGalleryThumbs = [...document.querySelectorAll('[data-ansys-gallery-index]')];
-  let activeAnsysGalleryIndex = 0;
-
-  function setAnsysGalleryItem(index) {
-    activeAnsysGalleryIndex = (index + ansysGalleryItems.length) % ansysGalleryItems.length;
-    const item = ansysGalleryItems[activeAnsysGalleryIndex];
-    ansysGalleryStage.innerHTML = '';
-    ansysGalleryTitle.textContent = item.name;
-
-    const image = document.createElement('img');
-    image.src = item.src;
-    image.alt = item.alt;
-    ansysGalleryStage.appendChild(image);
-
-    ansysGalleryThumbs.forEach((thumb, thumbIndex) => {
-      thumb.classList.toggle('is-active', thumbIndex === activeAnsysGalleryIndex);
-    });
-  }
-
-  function openAnsysGallery() {
-    ansysGalleryModal.classList.add('is-open');
-    ansysGalleryModal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    setAnsysGalleryItem(0);
-    document.querySelector('[data-ansys-gallery-close]').focus();
-  }
-
-  function closeAnsysGallery() {
-    ansysGalleryModal.classList.remove('is-open');
-    ansysGalleryModal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-    document.querySelector('[data-ansys-gallery-open]').focus();
-  }
-
-  document.querySelector('[data-ansys-gallery-open]').addEventListener('click', openAnsysGallery);
-  document.querySelector('[data-ansys-gallery-close]').addEventListener('click', closeAnsysGallery);
-  document.querySelector('[data-ansys-gallery-prev]').addEventListener('click', () => setAnsysGalleryItem(activeAnsysGalleryIndex - 1));
-  document.querySelector('[data-ansys-gallery-next]').addEventListener('click', () => setAnsysGalleryItem(activeAnsysGalleryIndex + 1));
-  ansysGalleryThumbs.forEach((thumb) => {
-    thumb.addEventListener('click', () => setAnsysGalleryItem(Number(thumb.dataset.ansysGalleryIndex)));
-  });
-  ansysGalleryModal.addEventListener('click', (event) => {
-    if (event.target === ansysGalleryModal) closeAnsysGallery();
-  });
-  document.addEventListener('keydown', (event) => {
-    if (!ansysGalleryModal.classList.contains('is-open')) return;
-    if (event.key === 'Escape') closeAnsysGallery();
-    if (event.key === 'ArrowLeft') setAnsysGalleryItem(activeAnsysGalleryIndex - 1);
-    if (event.key === 'ArrowRight') setAnsysGalleryItem(activeAnsysGalleryIndex + 1);
-  });
-</script>
-
-
-<div class="gallery-modal" id="arm-gallery" aria-hidden="true">
-  <div class="gallery-panel" role="dialog" aria-modal="true" aria-label="Robot arm gallery">
-    <div class="gallery-stage" id="arm-gallery-stage">
-      <video src="assets/images/arm-demo-mimic.mp4" poster="assets/images/arm-demo-mimic-poster.jpg" controls muted playsinline preload="none"></video>
-    </div>
-    <div class="gallery-side">
-      <div class="gallery-title" id="arm-gallery-title">Demo Video: Live Mimic</div>
-      <div class="gallery-note">Teach-by-demonstration robot arm, Embedded Systems Lab final project (SRH, Nov 2026). Videos are muted by default; unmute with the player controls. Demonstrated live on the real hardware with every planned feature working.</div>
-      <div class="gallery-actions">
-        <button class="gallery-btn" type="button" data-arm-gallery-prev>Prev</button>
-        <button class="gallery-btn" type="button" data-arm-gallery-next>Next</button>
-        <button class="gallery-btn gallery-close" type="button" data-arm-gallery-close>Close</button>
-      </div>
-      <div class="gallery-thumbs" aria-label="Choose robot arm image">
-        <button class="gallery-thumb-btn is-active" type="button" data-arm-gallery-index="0"><img loading="lazy" src="assets/images/arm-demo-mimic-poster.jpg" alt="Video of the follower arm copying the hand-held leader arm live"><span class="gallery-thumb-label">▶ Demo Video: Live Mimic</span></button>
-        <button class="gallery-thumb-btn" type="button" data-arm-gallery-index="1"><img loading="lazy" src="assets/images/arm-demo-replay-poster.jpg" alt="Video of the follower arm moving on its own with the dashboard twin tracking it"><span class="gallery-thumb-label">▶ Demo Video: Hands-Free Run</span></button>
-        <button class="gallery-thumb-btn" type="button" data-arm-gallery-index="2"><img loading="lazy" src="assets/images/arm-setup-labelled.jpg" alt="Complete teach-by-demonstration system: leader arm in hand, follower arm, ESP32 boards and dashboard"><span class="gallery-thumb-label">Complete Setup</span></button>
-        <button class="gallery-thumb-btn" type="button" data-arm-gallery-index="3"><img loading="lazy" src="assets/images/arm-live-test.jpg" alt="Follower arm copying the hand-held leader arm in a live test"><span class="gallery-thumb-label">Live Mimic Test</span></button>
-        <button class="gallery-thumb-btn" type="button" data-arm-gallery-index="4"><img loading="lazy" src="assets/images/arm-leader-in-hand.jpg" alt="Hand-held potentiometer leader arm driving the follower"><span class="gallery-thumb-label">Leader Arm in Hand</span></button>
-        <button class="gallery-thumb-btn" type="button" data-arm-gallery-index="5"><img loading="lazy" src="assets/images/arm-follower-pose.jpg" alt="Six-joint follower arm with the dashboard twin behind it"><span class="gallery-thumb-label">Follower Arm</span></button>
-        <button class="gallery-thumb-btn" type="button" data-arm-gallery-index="6"><img loading="lazy" src="assets/images/arm-block-diagram.jpg" alt="Block diagram of leader box, follower box and dashboard"><span class="gallery-thumb-label">System Block Diagram</span></button>
-        <button class="gallery-thumb-btn" type="button" data-arm-gallery-index="7"><img loading="lazy" src="assets/images/arm-state-machine.jpg" alt="State machine: WAIT_LINK, WAIT_SYNC, RUN, PLAYING, ESTOPPED"><span class="gallery-thumb-label">Leader State Machine</span></button>
-        <button class="gallery-thumb-btn" type="button" data-arm-gallery-index="8"><img loading="lazy" src="assets/images/arm-signal-pipeline.jpg" alt="Potentiometer signal pipeline: averaging, spike filter, EMA, dead zone, calibration, limits"><span class="gallery-thumb-label">Sensor Pipeline</span></button>
-        <button class="gallery-thumb-btn" type="button" data-arm-gallery-index="9"><img loading="lazy" src="assets/images/arm-dashboard.jpg" alt="Browser dashboard with 3D digital twin, joint table, history graph and controls"><span class="gallery-thumb-label">Dashboard HMI</span></button>
-        <button class="gallery-thumb-btn" type="button" data-arm-gallery-index="10"><img loading="lazy" src="assets/images/arm-leader-electronics.jpg" alt="Leader box electronics: ESP32, OLED, buttons and buzzer"><span class="gallery-thumb-label">Leader Electronics</span></button>
-      </div>
-    </div>
-  </div>
-</div>
-<script>
-(() => {
-  const items = [{type:'video',src:'assets/images/arm-demo-mimic.mp4',poster:'assets/images/arm-demo-mimic-poster.jpg',alt:'Video of the follower arm copying the hand-held leader arm live',name:'Demo Video: Live Mimic'},{type:'video',src:'assets/images/arm-demo-replay.mp4',poster:'assets/images/arm-demo-replay-poster.jpg',alt:'Video of the follower arm moving on its own with the dashboard twin tracking it',name:'Demo Video: Hands-Free Run'},{type:'image',src:'assets/images/arm-setup-labelled.jpg',poster:'assets/images/arm-setup-labelled-poster.jpg',alt:'Complete teach-by-demonstration system: leader arm in hand, follower arm, ESP32 boards and dashboard',name:'Complete Setup'},{type:'image',src:'assets/images/arm-live-test.jpg',poster:'assets/images/arm-live-test-poster.jpg',alt:'Follower arm copying the hand-held leader arm in a live test',name:'Live Mimic Test'},{type:'image',src:'assets/images/arm-leader-in-hand.jpg',poster:'assets/images/arm-leader-in-hand-poster.jpg',alt:'Hand-held potentiometer leader arm driving the follower',name:'Leader Arm in Hand'},{type:'image',src:'assets/images/arm-follower-pose.jpg',poster:'assets/images/arm-follower-pose-poster.jpg',alt:'Six-joint follower arm with the dashboard twin behind it',name:'Follower Arm'},{type:'image',src:'assets/images/arm-block-diagram.jpg',poster:'assets/images/arm-block-diagram-poster.jpg',alt:'Block diagram of leader box, follower box and dashboard',name:'System Block Diagram'},{type:'image',src:'assets/images/arm-state-machine.jpg',poster:'assets/images/arm-state-machine-poster.jpg',alt:'State machine: WAIT_LINK, WAIT_SYNC, RUN, PLAYING, ESTOPPED',name:'Leader State Machine'},{type:'image',src:'assets/images/arm-signal-pipeline.jpg',poster:'assets/images/arm-signal-pipeline-poster.jpg',alt:'Potentiometer signal pipeline: averaging, spike filter, EMA, dead zone, calibration, limits',name:'Sensor Pipeline'},{type:'image',src:'assets/images/arm-dashboard.jpg',poster:'assets/images/arm-dashboard-poster.jpg',alt:'Browser dashboard with 3D digital twin, joint table, history graph and controls',name:'Dashboard HMI'},{type:'image',src:'assets/images/arm-leader-electronics.jpg',poster:'assets/images/arm-leader-electronics-poster.jpg',alt:'Leader box electronics: ESP32, OLED, buttons and buzzer',name:'Leader Electronics'}];
-  const modal = document.getElementById('arm-gallery');
-  const stage = document.getElementById('arm-gallery-stage');
-  const title = document.getElementById('arm-gallery-title');
-  const thumbs = [...document.querySelectorAll('[data-arm-gallery-index]')];
-  let active = 0;
-  function set(i) {
-    active = (i + items.length) % items.length;
-    const it = items[active];
-    stage.innerHTML = ''; title.textContent = it.name;
-    if (it.type === 'video') { const v = document.createElement('video'); v.src = it.src; v.poster = it.poster; v.controls = true; v.muted = true; v.loop = true; v.playsInline = true; v.autoplay = true; v.setAttribute('aria-label', it.alt); v.style.maxHeight = 'calc(100vh - 120px)'; v.style.width = 'auto'; v.style.margin = '0 auto'; v.style.display = 'block'; stage.appendChild(v); } else { const img = document.createElement('img'); img.src = it.src; img.alt = it.alt; stage.appendChild(img); }
-    thumbs.forEach((t, k) => t.classList.toggle('is-active', k === active));
-  }
-  function open() { modal.classList.add('is-open'); modal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; set(0); document.querySelector('[data-arm-gallery-close]').focus(); }
-  function close() { stage.innerHTML = ''; modal.classList.remove('is-open'); modal.setAttribute('aria-hidden','true'); document.body.style.overflow=''; document.querySelector('[data-arm-gallery-open]').focus(); }
-  document.querySelector('[data-arm-gallery-open]').addEventListener('click', open);
-  document.querySelector('[data-arm-gallery-close]').addEventListener('click', close);
-  document.querySelector('[data-arm-gallery-prev]').addEventListener('click', () => set(active - 1));
-  document.querySelector('[data-arm-gallery-next]').addEventListener('click', () => set(active + 1));
-  thumbs.forEach(t => t.addEventListener('click', () => set(Number(t.dataset.armGalleryIndex))));
-  modal.addEventListener('click', e => { if (e.target === modal) close(); });
-  document.addEventListener('keydown', e => {
-    if (!modal.classList.contains('is-open')) return;
-    if (e.key === 'Escape') close();
-    if (e.key === 'ArrowLeft') set(active - 1);
-    if (e.key === 'ArrowRight') set(active + 1);
-  });
-})();
-</script>
-
-<!-- Certificate Modal -->
-<div class="cert-modal" id="cert-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Certificate viewer">
-  <div class="cert-panel">
-    <div class="cert-header">
-      <span class="cert-label" id="cert-modal-label">Certificate</span>
-      <button class="cert-close" type="button" id="cert-modal-close">Close &times;</button>
-    </div>
-    <div class="cert-img-wrap">
-      <img id="cert-modal-img" src="" alt="Certificate" />
-    </div>
-  </div>
-</div>
-<script>
-  const certData = {
-    solidworks: {
-      label: 'SolidWorks 2023 – Certificate of Completion',
-      src: 'assets/images/Solidworks-Certificate.jpg'
-    },
-    autocad: {
-      label: 'AutoCAD 2023 – Certificate of Completion',
-      src: 'assets/images/Autocad-Certificate.jpg'
+    for (let j = 0; j < rows; j++) {
+      const y = 18 + (h - 36) * (j + 0.5) / rows, L = 'DCBA'[j];
+      s += `<text x="9" y="${y + 4}" text-anchor="middle">${L}</text><text x="${w - 9}" y="${y + 4}" text-anchor="middle">${L}</text>`;
     }
+    svg.innerHTML = s;
   };
-  const certModal = document.getElementById('cert-modal');
-  const certModalImg = document.getElementById('cert-modal-img');
-  const certModalLabel = document.getElementById('cert-modal-label');
-  let lastCertOpener = null;
-  function openCert(key, el) {
-    const cert = certData[key];
-    certModalImg.src = cert.src;
-    certModalImg.alt = cert.label;
-    certModalLabel.textContent = cert.label;
-    lastCertOpener = el;
-    certModal.classList.add('is-open');
-    certModal.removeAttribute('aria-hidden');
-    document.body.style.overflow = 'hidden';
-    requestAnimationFrame(() => requestAnimationFrame(() => certModal.classList.add('is-visible')));
-    document.getElementById('cert-modal-close').focus();
-  }
-  function closeCert() {
-    certModal.classList.remove('is-visible');
-    setTimeout(() => {
-      certModal.classList.remove('is-open');
-      certModal.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
-      if (lastCertOpener) lastCertOpener.focus();
-    }, 220);
-  }
-  document.getElementById('cert-modal-close').addEventListener('click', closeCert);
-  certModal.addEventListener('click', e => { if (e.target === certModal) closeCert(); });
-  document.addEventListener('keydown', e => {
-    if (certModal.classList.contains('is-open') && e.key === 'Escape') closeCert();
-  });
-  document.querySelectorAll('[data-cert]').forEach(btn => {
-    btn.addEventListener('click', () => openCert(btn.dataset.cert, btn));
-  });
-</script>
+  draw(); addEventListener('resize', draw);
+})();
 
-<script>
-(function() {
-  var compCaptions = [
-    'Team Skybound · AAS, Monterey Virginia 2026',
-    'Ground Station · Pre-flight',
-    'Field Ops · Launch Day',
-    'Post-flight Hardware · After Recovery',
-    'Official Scoresheet · Final Rankings'
-  ];
-  var compAlts = [
-    'Team Skybound at CanSat 2026 in front of the AAS backdrop',
-    'Skybound ground station pre-flight with paraglider canopy',
-    'Field operations on launch day with orange CanSat shell',
-    'Post-flight hardware: orange shell, avionics, deployed paraglider',
-    'Official scoresheet — Team 1049 Germany 14th place 78.18%'
-  ];
-  var lightbox = document.getElementById('comp-lightbox');
-  var lbImg = document.getElementById('comp-lb-img');
-  var lbCaption = document.getElementById('comp-lb-caption');
-  var lbThumbs = document.getElementById('comp-lb-thumbs');
-  var compActive = 0;
-  var gridImgs = Array.from(document.querySelectorAll('[data-comp-index]')).map(function(el){return el.querySelector('img').src;});
+/* ---------- interactive arm (2-link IK + wrist) ---------- */
+(function arm() {
+  const svg = document.getElementById('armSvg'), stage = document.getElementById('armStage');
+  const NS = 'http://www.w3.org/2000/svg';
+  const W = 600, H = 552, base = { x: 300, y: 470 }, L1 = 190, L2 = 165, L3 = 56;
+  const mk = (tag, attrs, parent = svg) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.appendChild(e); return e; };
 
-  function buildThumbs() {
-    lbThumbs.innerHTML = '';
-    gridImgs.forEach(function(src, i) {
-      var btn = document.createElement('button');
-      btn.className = 'gallery-thumb-btn' + (i === compActive ? ' is-active' : '');
-      btn.type = 'button';
-      btn.innerHTML = '<img src="' + src + '" alt="' + compAlts[i] + '" style="width:100%;aspect-ratio:16/10;object-fit:cover;display:block;">';
-      btn.addEventListener('click', function(){setComp(i);});
-      lbThumbs.appendChild(btn);
-    });
+  // static base drawing
+  const g0 = mk('g', {});
+  mk('rect', { x: 230, y: 470, width: 140, height: 26, class: 'arm-base draw', style: '--len:340;--d:.2s' }, g0);
+  mk('line', { x1: 180, y1: 496, x2: 420, y2: 496, class: 'arm-base draw', style: '--len:240;--d:.1s' }, g0);
+  for (let x = 186; x < 420; x += 12) mk('line', { x1: x, y1: 496, x2: x - 10, y2: 508, class: 'arm-hatch' }, g0);
+  // ground dimension
+  mk('line', { x1: 230, y1: 526, x2: 370, y2: 526, class: 'dim' }, g0);
+  mk('line', { x1: 230, y1: 518, x2: 230, y2: 534, class: 'dim' }, g0);
+  mk('line', { x1: 370, y1: 518, x2: 370, y2: 534, class: 'dim' }, g0);
+  mk('text', { x: 300, y: 545, class: 'dim-text', 'text-anchor': 'middle' }, g0).textContent = 'Base 140';
+
+  const trail = mk('polyline', { class: 'trail', points: '' });
+  const target = mk('g', {});
+  mk('circle', { r: 9, class: 'target' }, target);
+  mk('line', { x1: -15, y1: 0, x2: 15, y2: 0, class: 'target' }, target);
+  mk('line', { x1: 0, y1: -15, x2: 0, y2: 15, class: 'target' }, target);
+
+  const arcs = mk('g', {});
+  const arc1 = mk('path', { class: 'dim' }, arcs), arc2 = mk('path', { class: 'dim' }, arcs);
+  const t1 = mk('text', { class: 'dim-text' }, arcs), t2 = mk('text', { class: 'dim-text' }, arcs);
+  const ref1 = mk('line', { class: 'arm-center' }), ref2 = mk('line', { class: 'arm-center' });
+
+  const linkPath = (ax, ay, bx, by, w) => {
+    const a = Math.atan2(by - ay, bx - ax), nx = -Math.sin(a) * w, ny = Math.cos(a) * w;
+    return `M${ax + nx},${ay + ny} L${bx + nx},${by + ny} A${w},${w} 0 0 0 ${bx - nx},${by - ny} L${ax - nx},${ay - ny} A${w},${w} 0 0 0 ${ax + nx},${ay + ny}Z`;
+  };
+  const link1 = mk('path', { class: 'arm-link draw', style: '--len:900;--d:.35s' });
+  const link2 = mk('path', { class: 'arm-link draw', style: '--len:800;--d:.55s' });
+  const link3 = mk('path', { class: 'arm-link draw', style: '--len:400;--d:.75s' });
+  const c1 = mk('line', { class: 'arm-center' }), c2 = mk('line', { class: 'arm-center' });
+  const gripA = mk('path', { class: 'arm-link draw', style: '--len:200;--d:.9s', fill: 'none' });
+  const gripB = mk('path', { class: 'arm-link draw', style: '--len:200;--d:.9s', fill: 'none' });
+  const joints = [0, 1, 2].map(() => { const g = mk('g', {}); mk('circle', { r: 13, class: 'arm-joint' }, g); mk('circle', { r: 3, class: 'arm-joint-dot' }, g); return g; });
+
+  let tgt = { x: 430, y: 220 }, cur = { th1: -1.2, th2: 0.9 }, lastMove = -1e9, grip = 0;
+  let recording = false, rec = [], playing = false, playIdx = 0;
+  const ro1 = document.getElementById('ro1'), ro2 = document.getElementById('ro2'), roMode = document.getElementById('roMode');
+  const recBtn = document.getElementById('recBtn'), playBtn = document.getElementById('playBtn');
+
+  function toSvg(e) {
+    const r = svg.getBoundingClientRect();
+    return { x: (e.clientX - r.left) * W / r.width, y: (e.clientY - r.top) * H / r.height };
   }
-  function setComp(i) {
-    compActive = (i + gridImgs.length) % gridImgs.length;
-    lbImg.src = gridImgs[compActive];
-    lbImg.alt = compAlts[compActive];
-    lbCaption.textContent = compCaptions[compActive];
-    lbThumbs.querySelectorAll('.gallery-thumb-btn').forEach(function(btn, idx){
-      btn.classList.toggle('is-active', idx === compActive);
-    });
+  function setTarget(p) {
+    const dx = p.x - base.x, dy = p.y - base.y; let d = Math.hypot(dx, dy);
+    const max = L1 + L2 - 6, min = 50;
+    let k = 1; if (d > max) k = max / d; if (d < min) k = min / d;
+    let y = base.y + dy * k; if (y > base.y - 20) y = base.y - 20;
+    tgt = { x: base.x + dx * k, y };
   }
-  function openComp(i) {
-    compActive = i; buildThumbs(); setComp(i);
-    lightbox.style.display = 'flex';
-    lightbox.setAttribute('aria-hidden','false');
-    document.body.style.overflow = 'hidden';
-    document.getElementById('comp-lb-close').focus();
-  }
-  function closeComp() {
-    lightbox.style.display = 'none';
-    lightbox.setAttribute('aria-hidden','true');
-    document.body.style.overflow = '';
-  }
-  document.querySelectorAll('[data-comp-index]').forEach(function(el){
-    el.addEventListener('click', function(){openComp(Number(el.dataset.compIndex));});
+  const heroEl = document.querySelector('.hero');
+  heroEl.addEventListener('pointermove', e => {
+    if (playing) return;
+    setTarget(toSvg(e)); lastMove = performance.now();
+    if (recording) { rec.push({ ...tgt }); if (rec.length > 600) stopRec(); }
   });
-  document.getElementById('comp-lb-close').addEventListener('click', closeComp);
-  document.getElementById('comp-lb-prev').addEventListener('click', function(){setComp(compActive-1);});
-  document.getElementById('comp-lb-next').addEventListener('click', function(){setComp(compActive+1);});
-  lightbox.addEventListener('click', function(e){if(e.target===lightbox)closeComp();});
-  document.addEventListener('keydown', function(e){
-    if(lightbox.style.display!=='flex') return;
-    if(e.key==='Escape') closeComp();
-    if(e.key==='ArrowLeft') setComp(compActive-1);
-    if(e.key==='ArrowRight') setComp(compActive+1);
+  heroEl.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' && !e.target.closest('button,a')) { setTarget(toSvg(e)); lastMove = performance.now(); } });
+
+  function stopRec() {
+    recording = false; recBtn.classList.remove('on'); recBtn.textContent = 'Record path';
+    playBtn.disabled = rec.length < 10; roMode.textContent = rec.length < 10 ? 'Follow' : `Recorded ${(rec.length / 60).toFixed(1)} s`;
+  }
+  recBtn.addEventListener('click', () => {
+    if (playing) return;
+    if (!recording) { recording = true; rec = []; recBtn.classList.add('on'); recBtn.textContent = 'Stop recording'; roMode.textContent = 'Recording'; playBtn.disabled = true; trail.setAttribute('points', ''); }
+    else stopRec();
   });
+  playBtn.addEventListener('click', () => {
+    if (rec.length < 10) return;
+    playing = !playing; playIdx = 0;
+    playBtn.textContent = playing ? 'Stop replay' : 'Replay';
+    roMode.textContent = playing ? 'Replaying' : 'Follow';
+    recBtn.disabled = playing;
+  });
+
+  function ik(p) {
+    const dx = p.x - base.x, dy = base.y - p.y, d2 = dx * dx + dy * dy;
+    let c = (d2 - L1 * L1 - L2 * L2) / (2 * L1 * L2); c = Math.max(-1, Math.min(1, c));
+    const th2 = -Math.acos(c); // elbow up
+    const th1 = Math.atan2(dy, dx) - Math.atan2(L2 * Math.sin(th2), L1 + L2 * Math.cos(th2));
+    return { th1, th2 };
+  }
+  const deg = r => (r * 180 / Math.PI);
+  const arcPath = (cx, cy, r, a0, a1) => {
+    const x0 = cx + r * Math.cos(a0), y0 = cy - r * Math.sin(a0), x1 = cx + r * Math.cos(a1), y1 = cy - r * Math.sin(a1);
+    const large = Math.abs(a1 - a0) > Math.PI ? 1 : 0, sweep = a1 > a0 ? 0 : 1;
+    return `M${x0},${y0} A${r},${r} 0 ${large} ${sweep} ${x1},${y1}`;
+  };
+
+  function frameStep(now) {
+    if (playing) { tgt = rec[playIdx]; playIdx = (playIdx + 1) % rec.length; }
+    else if (!reduce && now - lastMove > 3500) {
+      const t = now / 1000;
+      tgt = { x: base.x + 150 * Math.sin(t * 0.7), y: 230 + 70 * Math.sin(t * 1.1) };
+    }
+    const goal = ik(tgt), a = reduce ? 1 : 0.12;
+    cur.th1 += (goal.th1 - cur.th1) * a; cur.th2 += (goal.th2 - cur.th2) * a;
+    grip = (Math.sin(now / 600) + 1) / 2;
+
+    const j1 = { x: base.x + L1 * Math.cos(cur.th1), y: base.y - L1 * Math.sin(cur.th1) };
+    const a2 = cur.th1 + cur.th2;
+    const j2 = { x: j1.x + L2 * Math.cos(a2), y: j1.y - L2 * Math.sin(a2) };
+    const a3 = a2 * 0.35 - 0.6; // wrist keeps a gentle downward pitch
+    const j3 = { x: j2.x + L3 * Math.cos(a3), y: j2.y - L3 * Math.sin(a3) };
+
+    link1.setAttribute('d', linkPath(base.x, base.y, j1.x, j1.y, 16));
+    link2.setAttribute('d', linkPath(j1.x, j1.y, j2.x, j2.y, 13));
+    link3.setAttribute('d', linkPath(j2.x, j2.y, j3.x, j3.y, 9));
+    c1.setAttribute('x1', base.x); c1.setAttribute('y1', base.y); c1.setAttribute('x2', j1.x); c1.setAttribute('y2', j1.y);
+    c2.setAttribute('x1', j1.x); c2.setAttribute('y1', j1.y); c2.setAttribute('x2', j2.x); c2.setAttribute('y2', j2.y);
+    const nx = -Math.sin(-a3), ny = Math.cos(-a3), fx = Math.cos(a3), fy = -Math.sin(a3), open = 8 + grip * 10;
+    gripA.setAttribute('d', `M${j3.x + nx * 8},${j3.y + ny * 8} L${j3.x + nx * open + fx * 34},${j3.y + ny * open + fy * 34}`);
+    gripB.setAttribute('d', `M${j3.x - nx * 8},${j3.y - ny * 8} L${j3.x - nx * open + fx * 34},${j3.y - ny * open + fy * 34}`);
+    [base, j1, j2].forEach((p, k) => joints[k].setAttribute('transform', `translate(${p.x},${p.y})`));
+    target.setAttribute('transform', `translate(${tgt.x},${tgt.y})`);
+
+    // angle dimensions
+    ref1.setAttribute('x1', base.x); ref1.setAttribute('y1', base.y); ref1.setAttribute('x2', base.x + 90); ref1.setAttribute('y2', base.y);
+    arc1.setAttribute('d', arcPath(base.x, base.y, 62, 0, cur.th1));
+    const m1 = cur.th1 / 2; t1.setAttribute('x', base.x + 80 * Math.cos(m1) + 4); t1.setAttribute('y', base.y - 80 * Math.sin(m1) + 4);
+    t1.textContent = `θ₁ ${deg(cur.th1).toFixed(1)}°`;
+    ref2.setAttribute('x1', j1.x); ref2.setAttribute('y1', j1.y); ref2.setAttribute('x2', j1.x + 70 * Math.cos(cur.th1)); ref2.setAttribute('y2', j1.y - 70 * Math.sin(cur.th1));
+    arc2.setAttribute('d', arcPath(j1.x, j1.y, 44, cur.th1, a2));
+    const m2 = cur.th1 + cur.th2 / 2; t2.setAttribute('x', j1.x + 64 * Math.cos(m2) - 20); t2.setAttribute('y', j1.y - 64 * Math.sin(m2) + 4);
+    t2.textContent = `θ₂ ${deg(cur.th2).toFixed(1)}°`;
+    ro1.textContent = `${deg(cur.th1).toFixed(1)}°`; ro2.textContent = `${deg(cur.th2).toFixed(1)}°`;
+
+    if (recording || playing) trail.setAttribute('points', rec.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' '));
+    if (!reduce || playing || now - lastMove < 2000) requestAnimationFrame(frameStep);
+    else setTimeout(() => requestAnimationFrame(frameStep), 120);
+  }
+  requestAnimationFrame(frameStep);
 })();
 </script>
-<script>document.getElementById("year").textContent=new Date().getFullYear();</script>
 </body>
 </html>
