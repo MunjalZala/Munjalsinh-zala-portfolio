@@ -320,11 +320,13 @@
     </div>
 
     <div class="arm-stage" id="armStage">
-      <p class="arm-hint fade-in" style="--d:1.2s" id="armHint">Move your cursor over the sheet and the arm follows it. Record a path and replay it, like the <a href="#arm">real leader/follower arm</a> below.</p>
+      <p class="arm-hint fade-in" style="--d:1.2s" id="armHint">Move your cursor over the sheet and the gripper tip follows it; hold the mouse button to grip. Record a path and replay it, like the <a href="#arm">real leader/follower arm</a> below.</p>
       <svg id="armSvg" viewBox="0 0 600 552" role="img" aria-label="Interactive line drawing of a robot arm that follows the pointer"></svg>
       <div class="readout fade-in" style="--d:1.2s" aria-live="off">
         <div>Base joint θ₁</div><div id="ro1">0.0°</div>
         <div>Elbow joint θ₂</div><div id="ro2">0.0°</div>
+        <div>Wrist joint θ₃</div><div id="ro3">0.0°</div>
+        <div>Reach</div><div id="roReach">On target</div>
         <div>Mode</div><div id="roMode">Follow</div>
         <div class="ro-actions">
           <button class="ro-btn rec" id="recBtn" type="button">Record path</button>
@@ -680,7 +682,7 @@ addEventListener('scroll', onScroll, { passive: true }); onScroll();
 document.getElementById('year').textContent = new Date().getFullYear();
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (matchMedia('(pointer: coarse)').matches) {
-  document.getElementById('armHint').innerHTML = 'Drag across the drawing and the arm follows your finger. Record a path and replay it, like the <a href="#arm">real leader/follower arm</a> below.';
+  document.getElementById('armHint').innerHTML = 'Drag across the drawing and the gripper follows your finger. Record a path and replay it, like the <a href="#arm">real leader/follower arm</a> below.';
 }
 
 /* play the arm demo only while it is on screen */
@@ -712,19 +714,22 @@ new IntersectionObserver(([en]) => {
   draw(); addEventListener('resize', draw);
 })();
 
-/* ---------- interactive arm (2-link IK + wrist) ---------- */
+/* ---------- interactive arm: 3-joint IK with wrist pitch, joint limits, reach clamping ---------- */
 (function arm() {
-  const svg = document.getElementById('armSvg'), stage = document.getElementById('armStage');
+  const svg = document.getElementById('armSvg');
   const NS = 'http://www.w3.org/2000/svg';
-  const W = 600, H = 552, base = { x: 300, y: 470 }, L1 = 190, L2 = 165, L3 = 56;
+  const W = 600, H = 552, base = { x: 300, y: 470 };
+  const L1 = 185, L2 = 160, LW = 44, LF = 34, L3 = LW + LF;   // shoulder, forearm, wrist link, finger length
+  const R = d => d * Math.PI / 180, D = r => r * 180 / Math.PI;
+  const LIM = { t1: [R(15), R(165)], t2: R(140), t3: [R(-115), R(115)] };
+  const GROUND = -12;                                    // lowest tip height relative to the base pivot
   const mk = (tag, attrs, parent = svg) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.appendChild(e); return e; };
 
-  // static base drawing
+  /* static base */
   const g0 = mk('g', {});
   mk('rect', { x: 230, y: 470, width: 140, height: 26, class: 'arm-base draw', style: '--len:340;--d:.2s' }, g0);
   mk('line', { x1: 180, y1: 496, x2: 420, y2: 496, class: 'arm-base draw', style: '--len:240;--d:.1s' }, g0);
   for (let x = 186; x < 420; x += 12) mk('line', { x1: x, y1: 496, x2: x - 10, y2: 508, class: 'arm-hatch' }, g0);
-  // ground dimension
   mk('line', { x1: 230, y1: 526, x2: 370, y2: 526, class: 'dim' }, g0);
   mk('line', { x1: 230, y1: 518, x2: 230, y2: 534, class: 'dim' }, g0);
   mk('line', { x1: 370, y1: 518, x2: 370, y2: 534, class: 'dim' }, g0);
@@ -732,14 +737,14 @@ new IntersectionObserver(([en]) => {
 
   const trail = mk('polyline', { class: 'trail', points: '' });
   const target = mk('g', {});
-  mk('circle', { r: 9, class: 'target' }, target);
+  const tCircle = mk('circle', { r: 9, class: 'target' }, target);
   mk('line', { x1: -15, y1: 0, x2: 15, y2: 0, class: 'target' }, target);
   mk('line', { x1: 0, y1: -15, x2: 0, y2: 15, class: 'target' }, target);
 
   const arcs = mk('g', {});
-  const arc1 = mk('path', { class: 'dim' }, arcs), arc2 = mk('path', { class: 'dim' }, arcs);
-  const t1 = mk('text', { class: 'dim-text' }, arcs), t2 = mk('text', { class: 'dim-text' }, arcs);
-  const ref1 = mk('line', { class: 'arm-center' }), ref2 = mk('line', { class: 'arm-center' });
+  const arc1 = mk('path', { class: 'dim' }, arcs), arc2 = mk('path', { class: 'dim' }, arcs), arc3 = mk('path', { class: 'dim' }, arcs);
+  const t1 = mk('text', { class: 'dim-text' }, arcs), t2 = mk('text', { class: 'dim-text' }, arcs), t3 = mk('text', { class: 'dim-text' }, arcs);
+  const ref1 = mk('line', { class: 'arm-center' }), ref2 = mk('line', { class: 'arm-center' }), ref3 = mk('line', { class: 'arm-center' });
 
   const linkPath = (ax, ay, bx, by, w) => {
     const a = Math.atan2(by - ay, bx - ax), nx = -Math.sin(a) * w, ny = Math.cos(a) * w;
@@ -748,109 +753,169 @@ new IntersectionObserver(([en]) => {
   const link1 = mk('path', { class: 'arm-link draw', style: '--len:900;--d:.35s' });
   const link2 = mk('path', { class: 'arm-link draw', style: '--len:800;--d:.55s' });
   const link3 = mk('path', { class: 'arm-link draw', style: '--len:400;--d:.75s' });
-  const c1 = mk('line', { class: 'arm-center' }), c2 = mk('line', { class: 'arm-center' });
-  const gripA = mk('path', { class: 'arm-link draw', style: '--len:200;--d:.9s', fill: 'none' });
-  const gripB = mk('path', { class: 'arm-link draw', style: '--len:200;--d:.9s', fill: 'none' });
-  const joints = [0, 1, 2].map(() => { const g = mk('g', {}); mk('circle', { r: 13, class: 'arm-joint' }, g); mk('circle', { r: 3, class: 'arm-joint-dot' }, g); return g; });
+  const palm = mk('path', { class: 'arm-link', fill: 'none' });
+  const c1 = mk('line', { class: 'arm-center' }), c2 = mk('line', { class: 'arm-center' }), c3 = mk('line', { class: 'arm-center' });
+  const fingA = mk('path', { class: 'arm-link draw', style: '--len:200;--d:.9s' });
+  const fingB = mk('path', { class: 'arm-link draw', style: '--len:200;--d:.9s' });
+  const joints = [0, 1, 2].map((_, k) => { const g = mk('g', {}); mk('circle', { r: [13, 12, 10][k], class: 'arm-joint' }, g); mk('circle', { r: 3, class: 'arm-joint-dot' }, g); return g; });
 
-  let tgt = { x: 430, y: 220 }, cur = { th1: -1.2, th2: 0.9 }, lastMove = -1e9, grip = 0;
+  /* state */
+  let raw = { x: 450, y: 250 }, sm = { ...raw };                    // raw pointer target, smoothed target (svg coords)
+  let pose = { t1: R(95), t2: R(-80), t3: R(-40), phi: R(-25) };
+  let atLimit = false, lastMove = -1e9, holding = false, grip = 0;
   let recording = false, rec = [], playing = false, playIdx = 0;
-  const ro1 = document.getElementById('ro1'), ro2 = document.getElementById('ro2'), roMode = document.getElementById('roMode');
+  const ro1 = document.getElementById('ro1'), ro2 = document.getElementById('ro2'), ro3 = document.getElementById('ro3'),
+        roMode = document.getElementById('roMode'), roReach = document.getElementById('roReach');
   const recBtn = document.getElementById('recBtn'), playBtn = document.getElementById('playBtn');
+  let modeText = 'Follow';
+  const setMode = t => { modeText = t; };
+
+  /* IK: tip (X,Y) in math coords relative to the base pivot. Searches wrist approach angles near the previous one. */
+  const wrap = a => Math.atan2(Math.sin(a), Math.cos(a));
+  function solveAt(X, Y, phi, out) {
+    const wx = X - L3 * Math.cos(phi), wy = Y - L3 * Math.sin(phi);
+    if (wy < GROUND + 8) return;                                             // keep the wrist above the table
+    const c = (wx * wx + wy * wy - L1 * L1 - L2 * L2) / (2 * L1 * L2);
+    if (c < -1 || c > 1) return;
+    for (const sgn of [-1, 1]) {                                             // both elbow solutions
+      const a2 = sgn * Math.acos(c);
+      const a1 = Math.atan2(wy, wx) - Math.atan2(L2 * Math.sin(a2), L1 + L2 * Math.cos(a2));
+      const a3 = wrap(phi - a1 - a2);
+      if (a1 < LIM.t1[0] || a1 > LIM.t1[1] || Math.abs(a2) > LIM.t2 || a3 < LIM.t3[0] || a3 > LIM.t3[1]) continue;
+      const ex = L1 * Math.cos(a1), ey = L1 * Math.sin(a1);
+      const up = (wx * ey - wy * ex) * Math.sign(wx || 1) > 0;              // elbow above the shoulder-wrist line
+      const comfort = 0.5 * Math.abs(a1 - R(90)) + 1.5 * Math.max(0, Math.abs(a2) - R(110)) + 0.35 * Math.abs(a3) + (up ? 0 : 1.2);
+      const change = 1.6 * (Math.abs(a1 - pose.t1) + Math.abs(a2 - pose.t2) + Math.abs(a3 - pose.t3));
+      const cost = comfort + change;
+      if (cost < out.cost) { out.cost = cost; out.r = { t1: a1, t2: a2, t3: a3, phi }; }
+    }
+  }
+  function solve(X, Y) {
+    const out = { cost: Infinity, r: null };
+    for (let d = -180; d < 180; d += 3) solveAt(X, Y, R(d), out);           // score every wrist approach angle
+    return out.r;
+  }
+  function reach(p) {
+    let X = p.x - base.x, Y = Math.max(base.y - p.y, GROUND);
+    let r = solve(X, Y);
+    if (r) return { r, limited: false, X, Y };
+    // out of reach: slide the target toward a home point until the arm can reach it
+    const HX = 0, HY = 220; let lo = 0, hi = 1, best = null;
+    for (let i = 0; i < 16; i++) {
+      const m = (lo + hi) / 2, x = HX + (X - HX) * m, y = HY + (Y - HY) * m, s = solve(x, y);
+      if (s) { best = { r: s, X: x, Y: y }; lo = m; } else hi = m;
+    }
+    return best ? { ...best, limited: true } : { r: pose, limited: true, X, Y };
+  }
 
   function toSvg(e) {
     const r = svg.getBoundingClientRect();
     return { x: (e.clientX - r.left) * W / r.width, y: (e.clientY - r.top) * H / r.height };
   }
-  function setTarget(p) {
-    const dx = p.x - base.x, dy = p.y - base.y; let d = Math.hypot(dx, dy);
-    const max = L1 + L2 - 6, min = 50;
-    let k = 1; if (d > max) k = max / d; if (d < min) k = min / d;
-    let y = base.y + dy * k; if (y > base.y - 20) y = base.y - 20;
-    tgt = { x: base.x + dx * k, y };
-  }
-  const heroEl = document.querySelector('.hero');
-  heroEl.addEventListener('pointermove', e => {
+  const hero = document.querySelector('.hero');
+  hero.addEventListener('pointermove', e => {
     if (playing) return;
-    setTarget(toSvg(e)); lastMove = performance.now();
-    if (recording) { rec.push({ ...tgt }); if (rec.length > 600) stopRec(); }
+    raw = toSvg(e); lastMove = performance.now();
+    if (recording) { rec.push({ ...raw, g: holding }); if (rec.length > 600) stopRec(); }
   });
-  heroEl.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' && !e.target.closest('button,a')) { setTarget(toSvg(e)); lastMove = performance.now(); } });
+  hero.addEventListener('pointerdown', e => {
+    if (e.target.closest('button, a')) return;
+    raw = toSvg(e); lastMove = performance.now(); holding = true;
+  });
+  addEventListener('pointerup', () => { holding = false; });
+  addEventListener('pointercancel', () => { holding = false; });
 
   function stopRec() {
     recording = false; recBtn.classList.remove('on'); recBtn.textContent = 'Record path';
-    playBtn.disabled = rec.length < 10; roMode.textContent = rec.length < 10 ? 'Follow' : `Recorded ${(rec.length / 60).toFixed(1)} s`;
+    playBtn.disabled = rec.length < 10;
+    setMode(rec.length < 10 ? 'Follow' : `Recorded ${(rec.length / 60).toFixed(1)} s`);
   }
   recBtn.addEventListener('click', () => {
     if (playing) return;
-    if (!recording) { recording = true; rec = []; recBtn.classList.add('on'); recBtn.textContent = 'Stop recording'; roMode.textContent = 'Recording'; playBtn.disabled = true; trail.setAttribute('points', ''); }
+    if (!recording) { recording = true; rec = []; recBtn.classList.add('on'); recBtn.textContent = 'Stop recording'; setMode('Recording'); playBtn.disabled = true; trail.setAttribute('points', ''); }
     else stopRec();
   });
   playBtn.addEventListener('click', () => {
     if (rec.length < 10) return;
     playing = !playing; playIdx = 0;
     playBtn.textContent = playing ? 'Stop replay' : 'Replay';
-    roMode.textContent = playing ? 'Replaying' : 'Follow';
+    setMode(playing ? 'Replaying' : 'Follow');
     recBtn.disabled = playing;
   });
 
-  function ik(p) {
-    const dx = p.x - base.x, dy = base.y - p.y, d2 = dx * dx + dy * dy;
-    let c = (d2 - L1 * L1 - L2 * L2) / (2 * L1 * L2); c = Math.max(-1, Math.min(1, c));
-    const th2 = -Math.acos(c); // elbow up
-    const th1 = Math.atan2(dy, dx) - Math.atan2(L2 * Math.sin(th2), L1 + L2 * Math.cos(th2));
-    return { th1, th2 };
-  }
-  const deg = r => (r * 180 / Math.PI);
   const arcPath = (cx, cy, r, a0, a1) => {
     const x0 = cx + r * Math.cos(a0), y0 = cy - r * Math.sin(a0), x1 = cx + r * Math.cos(a1), y1 = cy - r * Math.sin(a1);
     const large = Math.abs(a1 - a0) > Math.PI ? 1 : 0, sweep = a1 > a0 ? 0 : 1;
     return `M${x0},${y0} A${r},${r} 0 ${large} ${sweep} ${x1},${y1}`;
   };
+  const P = (x, y) => `${x.toFixed(1)},${y.toFixed(1)}`;
+  const setLine = (el, a, b) => { el.setAttribute('x1', a.x); el.setAttribute('y1', a.y); el.setAttribute('x2', b.x); el.setAttribute('y2', b.y); };
 
-  function frameStep(now) {
-    if (playing) { tgt = rec[playIdx]; playIdx = (playIdx + 1) % rec.length; }
+  function frame(now) {
+    let gripGoal = holding ? 1 : 0;
+    if (playing) { const p = rec[playIdx]; raw = { x: p.x, y: p.y }; gripGoal = p.g ? 1 : 0; playIdx = (playIdx + 1) % rec.length; }
     else if (!reduce && now - lastMove > 3500) {
       const t = now / 1000;
-      tgt = { x: base.x + 150 * Math.sin(t * 0.7), y: 230 + 70 * Math.sin(t * 1.1) };
+      raw = { x: base.x + 170 * Math.sin(t * 0.6), y: 250 + 80 * Math.sin(t * 1.05) };
+      gripGoal = Math.sin(t * 0.6) > 0.85 ? 1 : 0;
     }
-    const goal = ik(tgt), a = reduce ? 1 : 0.12;
-    cur.th1 += (goal.th1 - cur.th1) * a; cur.th2 += (goal.th2 - cur.th2) * a;
-    grip = (Math.sin(now / 600) + 1) / 2;
+    const k = reduce ? 1 : 0.16;
+    sm.x += (raw.x - sm.x) * k; sm.y += (raw.y - sm.y) * k;
+    grip += (gripGoal - grip) * (reduce ? 1 : 0.2);
 
-    const j1 = { x: base.x + L1 * Math.cos(cur.th1), y: base.y - L1 * Math.sin(cur.th1) };
-    const a2 = cur.th1 + cur.th2;
-    const j2 = { x: j1.x + L2 * Math.cos(a2), y: j1.y - L2 * Math.sin(a2) };
-    const a3 = a2 * 0.35 - 0.6; // wrist keeps a gentle downward pitch
-    const j3 = { x: j2.x + L3 * Math.cos(a3), y: j2.y - L3 * Math.sin(a3) };
+    const res = reach(sm); atLimit = res.limited;
+    const ka = reduce ? 1 : 0.35;
+    pose = { t1: pose.t1 + (res.r.t1 - pose.t1) * ka, t2: pose.t2 + (res.r.t2 - pose.t2) * ka,
+             t3: wrap(pose.t3 + wrap(res.r.t3 - pose.t3) * ka), phi: 0 };
+    pose.phi = pose.t1 + pose.t2 + pose.t3;
+    const { t1: a1, t2: a2, t3: a3, phi } = pose;
+    const j1 = { x: base.x + L1 * Math.cos(a1), y: base.y - L1 * Math.sin(a1) };
+    const s2 = a1 + a2;
+    const j2 = { x: j1.x + L2 * Math.cos(s2), y: j1.y - L2 * Math.sin(s2) };
+    const ux = Math.cos(phi), uy = -Math.sin(phi), nx = -uy, ny = ux;         // wrist direction and its normal (svg)
+    const j3 = { x: j2.x + LW * ux, y: j2.y + LW * uy };
+    const tip = { x: j3.x + LF * ux, y: j3.y + LF * uy };
 
     link1.setAttribute('d', linkPath(base.x, base.y, j1.x, j1.y, 16));
     link2.setAttribute('d', linkPath(j1.x, j1.y, j2.x, j2.y, 13));
     link3.setAttribute('d', linkPath(j2.x, j2.y, j3.x, j3.y, 9));
-    c1.setAttribute('x1', base.x); c1.setAttribute('y1', base.y); c1.setAttribute('x2', j1.x); c1.setAttribute('y2', j1.y);
-    c2.setAttribute('x1', j1.x); c2.setAttribute('y1', j1.y); c2.setAttribute('x2', j2.x); c2.setAttribute('y2', j2.y);
-    const nx = -Math.sin(-a3), ny = Math.cos(-a3), fx = Math.cos(a3), fy = -Math.sin(a3), open = 8 + grip * 10;
-    gripA.setAttribute('d', `M${j3.x + nx * 8},${j3.y + ny * 8} L${j3.x + nx * open + fx * 34},${j3.y + ny * open + fy * 34}`);
-    gripB.setAttribute('d', `M${j3.x - nx * 8},${j3.y - ny * 8} L${j3.x - nx * open + fx * 34},${j3.y - ny * open + fy * 34}`);
-    [base, j1, j2].forEach((p, k) => joints[k].setAttribute('transform', `translate(${p.x},${p.y})`));
-    target.setAttribute('transform', `translate(${tgt.x},${tgt.y})`);
+    setLine(c1, base, j1); setLine(c2, j1, j2); setLine(c3, j2, tip);
+    const pw = 18;                                                               // palm half-width
+    palm.setAttribute('d', `M${P(j3.x + nx * pw, j3.y + ny * pw)} L${P(j3.x - nx * pw, j3.y - ny * pw)}`);
+    const open = 4 + (1 - grip) * 13;
+    fingA.setAttribute('d', `M${P(j3.x + nx * pw, j3.y + ny * pw)} L${P(j3.x + nx * pw + ux * 12, j3.y + ny * pw + uy * 12)} L${P(tip.x + nx * open, tip.y + ny * open)} L${P(tip.x + nx * (open - 5), tip.y + ny * (open - 5))} L${P(j3.x + nx * (pw - 6) + ux * 10, j3.y + ny * (pw - 6) + uy * 10)}`);
+    fingB.setAttribute('d', `M${P(j3.x - nx * pw, j3.y - ny * pw)} L${P(j3.x - nx * pw + ux * 12, j3.y - ny * pw + uy * 12)} L${P(tip.x - nx * open, tip.y - ny * open)} L${P(tip.x - nx * (open - 5), tip.y - ny * (open - 5))} L${P(j3.x - nx * (pw - 6) + ux * 10, j3.y - ny * (pw - 6) + uy * 10)}`);
+    [base, j1, j2].forEach((p, i) => joints[i].setAttribute('transform', `translate(${p.x},${p.y})`));
+
+    // target marker sits on the requested point; turns into a dashed ring when it is out of reach
+    target.setAttribute('transform', `translate(${raw.x},${Math.min(raw.y, base.y - GROUND)})`);
+    tCircle.setAttribute('stroke-dasharray', atLimit ? '3 3' : 'none');
 
     // angle dimensions
-    ref1.setAttribute('x1', base.x); ref1.setAttribute('y1', base.y); ref1.setAttribute('x2', base.x + 90); ref1.setAttribute('y2', base.y);
-    arc1.setAttribute('d', arcPath(base.x, base.y, 62, 0, cur.th1));
-    const m1 = cur.th1 / 2; t1.setAttribute('x', base.x + 80 * Math.cos(m1) + 4); t1.setAttribute('y', base.y - 80 * Math.sin(m1) + 4);
-    t1.textContent = `θ₁ ${deg(cur.th1).toFixed(1)}°`;
-    ref2.setAttribute('x1', j1.x); ref2.setAttribute('y1', j1.y); ref2.setAttribute('x2', j1.x + 70 * Math.cos(cur.th1)); ref2.setAttribute('y2', j1.y - 70 * Math.sin(cur.th1));
-    arc2.setAttribute('d', arcPath(j1.x, j1.y, 44, cur.th1, a2));
-    const m2 = cur.th1 + cur.th2 / 2; t2.setAttribute('x', j1.x + 64 * Math.cos(m2) - 20); t2.setAttribute('y', j1.y - 64 * Math.sin(m2) + 4);
-    t2.textContent = `θ₂ ${deg(cur.th2).toFixed(1)}°`;
-    ro1.textContent = `${deg(cur.th1).toFixed(1)}°`; ro2.textContent = `${deg(cur.th2).toFixed(1)}°`;
+    setLine(ref1, base, { x: base.x + 90, y: base.y });
+    arc1.setAttribute('d', arcPath(base.x, base.y, 60, 0, a1));
+    t1.setAttribute('x', base.x + 78 * Math.cos(a1 / 2) + 4); t1.setAttribute('y', base.y - 78 * Math.sin(a1 / 2) + 4);
+    t1.textContent = `θ₁ ${D(a1).toFixed(1)}°`;
+    setLine(ref2, j1, { x: j1.x + 62 * Math.cos(a1), y: j1.y - 62 * Math.sin(a1) });
+    arc2.setAttribute('d', arcPath(j1.x, j1.y, 42, a1, s2));
+    t2.setAttribute('x', j1.x + 60 * Math.cos(a1 + a2 / 2) - 18); t2.setAttribute('y', j1.y - 60 * Math.sin(a1 + a2 / 2) + 4);
+    t2.textContent = `θ₂ ${D(a2).toFixed(1)}°`;
+    setLine(ref3, j2, { x: j2.x + 48 * Math.cos(s2), y: j2.y - 48 * Math.sin(s2) });
+    arc3.setAttribute('d', arcPath(j2.x, j2.y, 30, s2, phi));
+    const m3 = s2 + a3 / 2 + Math.PI;                                            // label on the far side of the wrist
+    t3.setAttribute('x', j2.x + 34 * Math.cos(m3) - 22); t3.setAttribute('y', j2.y - 34 * Math.sin(m3) + 4);
+    t3.textContent = `θ₃ ${D(a3).toFixed(1)}°`;
 
-    if (recording || playing) trail.setAttribute('points', rec.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' '));
-    if (!reduce || playing || now - lastMove < 2000) requestAnimationFrame(frameStep);
-    else setTimeout(() => requestAnimationFrame(frameStep), 120);
+    ro1.textContent = `${D(a1).toFixed(1)}°`; ro2.textContent = `${D(a2).toFixed(1)}°`; ro3.textContent = `${D(a3).toFixed(1)}°`;
+    roReach.textContent = atLimit ? 'At limit' : 'On target';
+    window.__armTip = { tip, sm: { x: sm.x, y: Math.min(sm.y, base.y - GROUND) }, atLimit, a3 };
+    roMode.textContent = holding && !playing ? (modeText === 'Follow' ? 'Gripping' : modeText) : modeText;
+
+    if (recording || playing) trail.setAttribute('points', rec.map(p => P(p.x, p.y)).join(' '));
+    if (!reduce || playing || holding || now - lastMove < 2000) requestAnimationFrame(frame);
+    else setTimeout(() => requestAnimationFrame(frame), 120);
   }
-  requestAnimationFrame(frameStep);
+  requestAnimationFrame(frame);
 })();
 </script>
 </body>
